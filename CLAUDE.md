@@ -1,8 +1,10 @@
-# Pinguim Aventura
+# Aventura Pinguim (repositório `pinguim-aventura`)
 
 Jogo web para celular em estilo anos 80: protagonista pinguim, quatro fases, controle 100% por
 toque. Público: um jogador de 6 anos (principal) e um de 10 anos, da família do mantenedor. Uso
 doméstico. Dev é meio, não fim: a solução mais simples que entregue um jogo divertido e estável.
+
+Conceito aprovado (GATE 1): **B, base Frostbite**; protagonista **Pipo**. Ver `docs/brainstorm.md`.
 
 ## Regras invioláveis (repositório público)
 
@@ -19,8 +21,8 @@ doméstico. Dev é meio, não fim: a solução mais simples que entregue um jogo
 
 ## Adequação à idade
 
-- Alvos de toque grandes (referência: 64 px CSS ou mais), sem gestos finos, toque duplo ou
-  multitoque obrigatórios.
+- Alvos de toque de no mínimo 2 cm (~115 px CSS nos aparelhos-alvo; ver `docs/referencias.md`,
+  P1), encostados na borda da tela, sem gestos finos, toque duplo ou multitoque obrigatórios.
 - Jogável sem saber ler: ícones, cores, sons e demonstração em vez de texto.
 - Falha suave, sem sustos nem violência; no modo do jogador de 6 anos, sem game over punitivo.
 - Um nível de dificuldade ou desafios opcionais que mantenham o jogador de 10 anos interessado.

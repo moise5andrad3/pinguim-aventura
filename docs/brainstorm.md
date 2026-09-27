@@ -282,3 +282,10 @@ fazer uma busca simples depois da escolha.
 3. **Alvos de toque:** adotar 2 cm (~115 px CSS) como mínimo, no lugar dos 64 px CSS do
    `CLAUDE.md`, que medem ~11 mm nesses aparelhos (ver `referencias.md`, P1). Proponho ajustar o
    `CLAUDE.md` na mesma linha.
+
+## Decisão do GATE 1 (aprovada pelo mantenedor em 2026-09-27)
+
+1. **Conceito: B**, "Iglu no Gelo" (base Frostbite), com as adaptações descritas acima.
+2. **Nomes:** jogo **Aventura Pinguim**; pinguim **Pipo**.
+3. **Alvos de toque:** mínimo de **2 cm** (~115 px CSS nos aparelhos-alvo). O `CLAUDE.md` foi
+   ajustado.
