@@ -1,6 +1,6 @@
 # ADR-001: Plataforma, empacotamento, orientação e resolução
 
-- **Status:** proposto, aguardando o GATE 2
+- **Status:** aceito (GATE 2 aprovado pelo mantenedor em 2026-09-27: plataforma e orientação em paisagem)
 - **Data:** 2026-09-27
 - **Decisores:** mantenedor (aprovação); proposta técnica registrada aqui
 
