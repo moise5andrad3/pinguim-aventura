@@ -1,6 +1,6 @@
 # PRD: Aventura Pinguim
 
-- **Status:** proposto, aguardando o GATE 3
+- **Status:** aprovado no GATE 3 (2026-09-27), com os ajustes registrados no fim do documento
 - **Data:** 2026-09-27
 - **Base:**
   - conceito B aprovado no GATE 1 (`brainstorm.md`);
@@ -20,11 +20,14 @@ bater os próprios recordes.
 
 | Persona | Perfil | Precisa de | Modo |
 |---|---|---|---|
-| Jogador de 6 anos (principal) | Lê algumas palavras simples. Segura o celular com as duas mãos. Motricidade fina em formação | Sucesso frequente, zonas de toque enormes, nenhum susto e nenhuma perda de progresso. Instruções por imagem e som | **Filhote** (ícone de pinguim pequeno) |
-| Jogador de 10 anos | Lê bem. Quer desafio e comparar resultados | Relógio, placar, medalhas, coletáveis escondidos e risco real de errar, sem castigo longo | **Aventureiro** (ícone de pinguim grande) |
+| Jogador de 6 anos (principal) | Lê algumas palavras simples. Segura o celular com as duas mãos. Motricidade fina em formação | Sucesso frequente, zonas de toque enormes, nenhum susto e nenhuma perda de progresso. Instruções por imagem e som | **Diversão** (ícone de pinguim pequeno) |
+| Jogador de 10 anos | Lê bem. Quer desafio e comparar resultados | Relógio, placar, coletáveis escondidos e risco real de errar, sem castigo longo | **Aventura** (ícone de pinguim grande) |
 | Pai (operador) | Desenvolvedor, instala e atualiza | Instalar pela tela inicial, jogo offline, zero manutenção, silenciar e apagar recordes sem ajuda | Nenhum; usa telas de ajuste |
 
-Os dois jogadores revezam o mesmo aparelho. Cada modo guarda os próprios recordes.
+Os dois jogadores revezam o mesmo aparelho, e **os modos não pertencem a uma criança**: qualquer
+um dos dois pode jogar qualquer modo. Por isso as regras e recompensas dos dois modos são
+parecidas, e o modo Aventura só acrescenta relógio e risco. Cada modo guarda o próprio progresso e
+os próprios recordes.
 
 ## 3. Escopo
 
@@ -35,8 +38,7 @@ Os dois jogadores revezam o mesmo aparelho. Cada modo guarda os próprios record
 - pixel art original;
 - efeitos e músicas chiptune gerados por Web Audio;
 - recordes locais;
-- instalação na tela inicial e funcionamento offline;
-- nome do jogador opcional, digitado no jogo e salvo só no aparelho.
+- instalação na tela inicial e funcionamento offline.
 
 **Fora (não-objetivos):**
 - multiplayer simultâneo, contas, nuvem, sincronização entre aparelhos;
@@ -45,6 +47,7 @@ Os dois jogadores revezam o mesmo aparelho. Cada modo guarda os próprios record
   pedir);
 - iPhone e iPad como alvo: vale só o melhor esforço, sem tela cheia nem trava de orientação;
 - narração por voz (gravada ou sintetizada), tradução, editor de fases;
+- nome do jogador ou qualquer outra personalização (retirado no GATE 3);
 - fotos, vozes ou qualquer dado das crianças.
 
 ## 4. Loop de jogo e regras
@@ -81,7 +84,7 @@ Os dois jogadores revezam o mesmo aparelho. Cada modo guarda os próprios record
 
 ### Regras por modo
 
-| Regra | Filhote (6 anos) | Aventureiro (10 anos) |
+| Regra | Diversão (6 anos) | Aventura (10 anos) |
 |---|---|---|
 | Relógio | Nenhum. O sol é só decorativo | **Pôr do sol:** 90 s por fase (calibrar). Se o sol se põe, a fase recomeça |
 | Queda na água | Sem perda | Perde 1 **peixe-vida** (3 por fase). Sem peixes-vida, a fase recomeça |
@@ -104,15 +107,13 @@ Todos os valores abaixo são para calibrar.
 | Peixe comum (nada ao longo das fileiras; pega-se ao encostar) | 50 |
 | Peixe dourado (1 por fase, a partir da fase 2) | 200 |
 | Estrela-do-mar (3 escondidas por fase, nas fases 3 e 4) | 300 |
-| Bônus de sol (Aventureiro: segundos restantes × 10) | variável |
+| Bônus de sol (Aventura: segundos restantes × 10) | variável |
 
-- **Medalhas (Aventureiro):**
-  - bronze: concluir;
-  - prata: concluir com pelo menos 30 s de sol;
-  - ouro: prata e todas as estrelas-do-mar da fase (nas fases 1 e 2, ouro é prata sem cair).
-- **Filhote:** sem medalhas nem pontuação que "reprove". Cada fase concluída ganha um
-  **carimbo do Pipo** no mapa. Os peixes aparecem como contagem de ícones mais o número, o que
+- **Recompensa única, igual nos dois modos:** cada fase concluída ganha um **carimbo do Pipo** no
+  mapa. Não há medalhas.
+- **Números visíveis nos dois modos:** pontos e peixes aparecem como ícone mais número, o que
   ajuda a reconhecer numerais (P3).
+- **Recorde por fase:** maior pontuação. No modo Aventura, também o menor tempo.
 
 ## 5. Controles por toque
 
@@ -167,22 +168,22 @@ Tela em paisagem, 320 × 180 px lógicos. As medidas são aproximadas.
 ## 7. Telas e fluxo
 
 ```
-Abertura -> Escolha do jogador -> Mapa -> [Demonstração] -> Jogo -> Fase concluída -> Mapa ...
-                                                             |                          |
-                                                          Pausa            (após fase 4) Final -> Recordes -> Mapa
+Abertura -> Escolha do modo -> Mapa -> [Demonstração] -> Jogo -> Fase concluída -> Mapa ...
+                                                          |                          |
+                                                        Pausa           (após fase 4) Final -> Recordes -> Mapa
 ```
 
 | Tela | Conteúdo | Interação |
 |---|---|---|
 | Abertura | Título "AVENTURA PINGUIM" em fonte pixel, Pipo animado, música-tema | Um botão ▶ grande. O primeiro toque libera o áudio, pede tela cheia e trava paisagem (ADR) |
-| Escolha do jogador | Dois cartões grandes: pinguim pequeno (Filhote) e pinguim grande (Aventureiro). Abaixo de cada um, o nome, se houver | Tocar no cartão. Um ícone de lápis abre um campo para digitar o nome (opcional, até 10 letras, salvo só no aparelho) |
-| Mapa | 4 ilhas ligadas por um caminho; cadeado nas bloqueadas; carimbo ou medalha nas concluídas. Botões de voltar e de recordes | Tocar numa ilha |
+| Escolha do modo | Dois cartões grandes: pinguim pequeno com a palavra "DIVERSÃO" e pinguim grande com a palavra "AVENTURA" | Tocar no cartão |
+| Mapa | 4 ilhas ligadas por um caminho; cadeado nas bloqueadas; carimbo nas concluídas. Botões de voltar e de recordes | Tocar numa ilha |
 | Demonstração | Na primeira vez em cada fase: mão fantasma toca acima e abaixo e Pipo pula; depois a palavra "VAI!" com som | Qualquer toque pula a demonstração |
 | Jogo | Seção 5 | Seção 5 |
 | Pausa | Jogo congelado e escurecido; 3 ícones grandes: ▶ continuar, ↻ recomeçar, mapa | Recomeçar e mapa pedem confirmação com ✔ verde e ✘ vermelho (Sesame) |
-| Fase concluída | Pipo entra no iglu, fanfarra, tijolos e peixes contados com "plim", medalha ou carimbo, palavra "BOA!" | ▶ próxima fase, ou mapa |
+| Fase concluída | Pipo entra no iglu, fanfarra, tijolos e peixes contados com "plim", carimbo, palavra "BOA!" | ▶ próxima fase, ou mapa |
 | Final | A colônia faz festa na aurora com o iglu gigante; música de festa; palavra "FIM" | ▶ vai para os recordes |
-| Recordes | Por modo e por fase: medalha, peixes, pontos e melhor tempo (Aventureiro) | Apagar recordes: botão de lixeira que exige **segurar 3 s**. É proteção para adulto; a criança nunca precisa desse gesto |
+| Recordes | Por modo e por fase: carimbo, peixes, pontos e melhor tempo (modo Aventura) | Apagar recordes: botão de lixeira que exige **segurar 3 s**. É proteção para adulto; a criança nunca precisa desse gesto |
 | Aviso de retrato | Celular desenhado girando para deitado, sem texto | Some ao girar |
 
 Se o app for para segundo plano (`visibilitychange`), o jogo pausa sozinho.
@@ -239,7 +240,7 @@ caracteres convertidas em imagem na carga) ou em PNG próprio; a escolha fica em
 | Foca-dorminhoca | 24 × 12 | Dormir com "Zz" (2), rolar (4) |
 | Sol, lua, aurora | Sol 16 × 16; aurora em faixas | Aurora ondulando (4) |
 | Colônia (final) | 16 × 16, 3 variações | Dança (2) |
-| Ícones de interface | 12 × 12 a 24 × 24 | ▶, pausa, som ligado e desligado, ↻, mapa, cadeado, ✔, ✘, lápis, lixeira, troféu, 3 medalhas, carimbo, mão fantasma (2), seta de dica (2), celular girando (4) |
+| Ícones de interface | 12 × 12 a 24 × 24 | ▶, pausa, som ligado e desligado, ↻, mapa, cadeado, ✔, ✘, lixeira, troféu, carimbo, mão fantasma (2), seta de dica (2), celular girando (4) |
 | Fonte pixel própria | 5 × 7 | Maiúsculas, dígitos e as letras das palavras usadas |
 
 ## 9. Direção de som
@@ -255,9 +256,9 @@ Tudo é sintetizado com Web Audio: ondas quadrada, triangular e ruído. Não há
 - peixe (bip ascendente), peixe dourado (arpejo), estrela-do-mar (brilho);
 - gaivota (grasnado de aviso), caranguejo (clique), foca (ronco);
 - bloco piscando (aviso);
-- porta aparecendo, entrar no iglu, fanfarra de fase concluída, medalha, carimbo;
+- porta aparecendo, entrar no iglu, fanfarra de fase concluída, carimbo;
 - dica (sininho), pausa, botões de menu, "VAI!" (acorde);
-- sol se pondo (Aventureiro), perda de peixe-vida (som descendente suave, sem susto).
+- sol se pondo (Aventura), perda de peixe-vida (som descendente suave, sem susto).
 
 **Músicas:**
 - tema da abertura;
@@ -289,8 +290,7 @@ Tudo é sintetizado com Web Audio: ondas quadrada, triangular e ruído. Não há
   - tudo é servido pelo próprio GitHub Pages;
   - o carregamento do site registra o IP no GitHub, como qualquer hospedagem (ADR-001);
   - depois disso, nenhuma requisição.
-- **`localStorage` guarda só:** modo escolhido, nome opcional, recordes, fases desbloqueadas e
-  estado do som. Nada disso sai do aparelho.
+- **`localStorage` guarda só:** modo escolhido, recordes, fases desbloqueadas e estado do som. Nada disso sai do aparelho.
 - **Repositório público:**
   - nenhum nome, foto ou voz das crianças no código, nos commits, nos docs ou nas issues;
   - anotações de playtest ficam no Drive do mantenedor;
@@ -319,8 +319,8 @@ Tudo é sintetizado com Web Audio: ondas quadrada, triangular e ruído. Não há
 | G8 | Nenhum som antes do primeiro toque; o botão de silenciar funciona e persiste | Playwright, pelo estado do `AudioContext` e do `localStorage` |
 | G9 | Em retrato aparece o aviso "gire o celular"; em paisagem, o jogo | Playwright |
 | G10 | O jogo pausa sozinho ao ir para segundo plano | Playwright |
-| G11 | Todas as telas são navegáveis sem ler: toda ação tem ícone, e as palavras são só "AVENTURA PINGUIM", "VAI!", "BOA!", "FIM" e o nome opcional | Revisão por lista de verificação e capturas de tela |
-| G12 | No modo Filhote não existe tela nem estado de derrota | Teste por script: cair 20 vezes não reinicia nem tira tijolo |
+| G11 | Todas as telas são navegáveis sem ler: toda ação tem ícone, e as palavras são só "AVENTURA PINGUIM", "DIVERSÃO", "AVENTURA", "VAI!", "BOA!" e "FIM" | Revisão por lista de verificação e capturas de tela |
+| G12 | No modo Diversão não existe tela nem estado de derrota | Teste por script: cair 20 vezes não reinicia nem tira tijolo |
 
 ### Por fase
 
@@ -330,7 +330,7 @@ Os testes por script usam semente aleatória fixa para serem reproduzíveis.
 |---|---|
 | Todas | Um script de toques conclui a fase nos dois modos. O iglu atinge o número de tijolos da fase, a porta aparece, Pipo entra e a tela de fase concluída surge. Há captura de tela de cada fase |
 | 1 | Pousar numa fileira branca soma exatamente 1 tijolo e a torna azul; as 4 azuis voltam a branco; pousar na azul não soma |
-| 2 | No Filhote, a gaivota nunca faz o Pipo cair (teste forçado). No Aventureiro, pode fazer. O aviso (sombra e som) acontece ≥ 1 s antes |
+| 2 | No Diversão, a gaivota nunca faz o Pipo cair (teste forçado). No Aventura, pode fazer. O aviso (sombra e som) acontece ≥ 1 s antes |
 | 3 | Todo bloco pisca ≥ 1 s antes de afundar. Pipo sobre bloco que afunda cai e nada até a margem |
 | 4 | A foca nunca impede a entrada por mais de 3 s. Após a fase, aparece a tela final e os recordes são gravados |
 
@@ -338,9 +338,9 @@ Os testes por script usam semente aleatória fixa para serem reproduzíveis.
 
 | Marco | Entrega | Critérios de aceite cobertos |
 |---|---|---|
-| **M1: fatia vertical** | Fase 1 jogável no celular, só no modo Filhote. Toque, colisão, tijolos, queda e nado, conclusão. Arte provisória simples, já na paleta. Modo de diagnóstico (escala, `devicePixelRatio`, fps). Publicação em GitHub Pages | G1, G3, G9, G12 parcial; fase 1 |
-| **M2: quatro fases** | Fases 2 a 4, modo Aventureiro (sol, peixes-vida, medalhas), escolha do jogador, mapa, pausa, tela final, recordes | G10, G11, G12; fases 2 a 4 |
-| **M3: polimento e som** | Efeitos e músicas, animações completas, arte final, demonstração e dicas, instalação na tela inicial, offline, nome opcional | G2, G4, G5, G6, G7, G8 |
+| **M1: fatia vertical** | Fase 1 jogável no celular, só no modo Diversão. Toque, colisão, tijolos, queda e nado, conclusão. Arte provisória simples, já na paleta. Modo de diagnóstico (escala, `devicePixelRatio`, fps). Publicação em GitHub Pages | G1, G3, G9, G12 parcial; fase 1 |
+| **M2: quatro fases** | Fases 2 a 4, modo Aventura (sol, peixes-vida), escolha do modo, mapa com carimbos, pausa, tela final, recordes | G10, G11, G12; fases 2 a 4 |
+| **M3: polimento e som** | Efeitos e músicas, animações completas, arte final, demonstração e dicas, instalação na tela inicial, offline | G2, G4, G5, G6, G7, G8 |
 | **M4: playtest e ajustes** | Roteiro de playtest, ajustes aprovados, README, tag v1.0.0 | Todos, mais a calibração dos valores marcados como "calibrar" |
 
 Cada marco termina com um relatório de verificação: o que foi testado, o que passou, o que falhou
@@ -362,14 +362,13 @@ e o que não foi possível testar. A publicação acontece quando o mantenedor f
 | Escopo crescer (fase corrida, mais inimigos) | Atraso | Fora de escopo explícito (seção 3). Novidades só depois da v1.0 e com aprovação |
 | Vazamento de dado pessoal no repositório | Privacidade | G6 roda em todo marco. Anotações ficam no Drive |
 
-## Perguntas em aberto para o GATE 3
+## Decisões do GATE 3 (mantenedor, 2026-09-27)
 
-1. **Nome do jogador:** confirmar que entra no M3 como opcional e que é cortado primeiro se houver
-   atraso.
-2. **Filhote:**
-   - mostrar números (pontos e peixes) junto dos ícones? Proposta: sim, para ajudar a reconhecer
-     numerais (P3);
-   - todas as fases liberadas desde o início, ou desbloqueio progressivo? Proposta: progressivo,
-     com rejogar livre.
-3. **Aventureiro:** confirmar a regra de castigo máximo, "recomeçar a fase atual" (sem voltar à
-   fase 1).
+1. PRD aprovado. Os modos se chamam **Diversão** (pensado para o jogador de 6 anos) e **Aventura**
+   (pensado para o de 10 anos). Como as crianças vão trocar de modo entre si, a Aventura não deve
+   ficar complicada: ela só acrescenta relógio e risco.
+2. Recompensa unificada: **carimbo do Pipo no mapa por fase, nos dois modos**. Não há medalhas.
+3. **Nome do jogador retirado** do escopo.
+4. Números (pontos e peixes) visíveis junto dos ícones.
+5. Modo Diversão: fases desbloqueadas uma a uma, com rejogar livre.
+6. Modo Aventura: castigo máximo é recomeçar a fase atual.
