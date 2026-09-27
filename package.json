@@ -1,0 +1,13 @@
+{
+  "name": "pinguim-aventura",
+  "private": true,
+  "description": "Aventura Pinguim: ferramentas de teste (nada aqui é carregado pelo jogo)",
+  "scripts": {
+    "servir": "python3 -m http.server 8080",
+    "test": "playwright test",
+    "verificar": "node tests/verificar.mjs"
+  },
+  "devDependencies": {
+    "@playwright/test": "1.56.1"
+  }
+}
