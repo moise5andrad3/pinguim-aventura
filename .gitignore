@@ -1,0 +1,18 @@
+# Sistema operacional
+.DS_Store
+Thumbs.db
+
+# Editores
+.vscode/
+.idea/
+*.swp
+
+# Dependências e artefatos de teste (Playwright)
+node_modules/
+test-results/
+playwright-report/
+*.log
+
+# Segredos
+.env
+.env.*
