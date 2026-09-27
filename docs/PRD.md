@@ -146,6 +146,9 @@ Tela em paisagem, 320 × 180 px lógicos. As medidas são aproximadas.
 - **Botões fixos:** `[II]` pausa e `[som]` silenciar, nos cantos superiores. O ícone é pequeno,
   mas a área de toque é um quadrado de **2 cm** encostado no canto. Nessa área o toque aciona o
   botão, não o pulo.
+  - **Exceção (achada no M1):** com o Pipo numa fileira, um toque a menos de 24 px dele na
+    horizontal é sempre pulo, mesmo dentro da área do canto. Sem isso, com o Pipo perto da borda,
+    tocar "acima dele" pausaria o jogo. O botão continua funcionando em todo o resto da área.
 - **Momento do toque:** a ação acontece em `pointerdown`. Não há toque duplo, multitoque nem
   arraste (P2). Com dois dedos ao mesmo tempo, vale só o primeiro.
 - **Teclado (só desktop):** setas cima e baixo pulam; esquerda e direita inclinam; Esc pausa;

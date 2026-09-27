@@ -67,7 +67,8 @@ export const cena = {
 };
 ```
 
-- `main.js` guarda a cena atual. `trocarCena(nome, dados)` troca de cena.
+- `main.js` guarda a cena atual e injeta em cada cena a função `trocar(nome, dados)`, que troca
+  de cena.
 - A pausa não é uma cena: é um estado dentro de `jogo.js`, para preservar a fase congelada.
 
 ## Entrada de toque (`toque.js`)
@@ -80,6 +81,8 @@ export const cena = {
   Valores fora de 0 a 320 são permitidos: as sobras também são zonas.
 - **Filtro de *holdover*:** um toque a menos de 120 ms do anterior e a menos de 8 px lógicos dele
   é descartado (PRD, seção 4).
+- **Prioridade do pulo:** perto do Pipo (menos de 24 px na horizontal), o toque é pulo mesmo
+  dentro da área dos botões de canto (PRD, seção 5).
 - **Teclado de teste:** setas, Esc e M viram toques sintéticos equivalentes. Não é requisito.
 
 ## Renderizador pixel-perfect (`tela.js`)
