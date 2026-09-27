@@ -133,7 +133,10 @@ iniciarToque(
   (x, y) => {
     if (!retrato()) cena.toque(x, y);
   },
-  audio.desbloquear,
+  () => {
+    audio.desbloquear();
+    tela.telaCheia();
+  },
 );
 trocarCena('abertura');
 iniciarLoop();

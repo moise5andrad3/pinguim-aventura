@@ -1,9 +1,9 @@
 // Abertura: título, Pipo animado e um botão de jogar que ocupa a tela toda.
-// O primeiro toque libera o áudio (em main.js), pede tela cheia e trava paisagem.
+// O áudio e a tela cheia (com trava de paisagem) são pedidos em main.js, ao soltar o dedo.
 import * as audio from '../audio.js';
 import { escreverCentro } from '../fonte.js';
 import { dados, gravar } from '../salvar.js';
-import { noCanto, telaCheia } from '../tela.js';
+import { noCanto } from '../tela.js';
 
 let t = 0;
 
@@ -20,7 +20,6 @@ export const cena = {
       audio.tocar('toque');
       return;
     }
-    telaCheia();
     audio.tocar('pulo');
     // M1: só a fase 1 no modo Diversão. Escolha de modo e mapa entram no M2.
     cena.trocar('jogo', { modo: 'diversao', fase: 0 });

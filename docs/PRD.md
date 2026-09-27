@@ -161,10 +161,15 @@ Tela em paisagem, 320 × 180 px lógicos. As medidas são aproximadas.
 | 1 | Baía Calma, manhã | Pular para cima e para baixo; tijolos | Só o mar; blocos longos e lentos | Peixes | 2 a 3 min | Iglu completo e Pipo entra |
 | 2 | Correnteza, tarde | Fileiras com velocidades diferentes; blocos mais curtos | Gaivotas travessas (sombra e grasnado 1 s antes do mergulho) | Peixes e 1 peixe dourado | 2 a 3 min | Igual |
 | 3 | Gelo Fino, entardecer | Blocos que afundam por 1,5 s e voltam; piscam 1 s antes | Caranguejos dançarinos andando sobre blocos | Peixes e 3 estrelas-do-mar | ~3 min | Igual |
-| 4 | Noite de Aurora | Foca-dorminhoca rolando na margem na frente do iglu; esperar a vez de entrar | Gaivotas e caranguejos; poucos blocos afundando | Peixes, 1 peixe dourado e 3 estrelas-do-mar | 3 a 4 min | Igual, e depois vem a tela final |
+| 4 | Noite de Aurora | **Ursinho-polar** passeando na margem na frente do iglu; esperar a vez de entrar | Gaivotas e caranguejos; poucos blocos afundando | Peixes, 1 peixe dourado e 3 estrelas-do-mar | 3 a 4 min | Igual, e depois vem a tela final |
 
-- **Foca-dorminhoca:** encostar nela faz Pipo quicar para trás, sem perda. Ela nunca bloqueia a
-  porta por mais de 3 s.
+- **Ursinho-polar (pedido do mantenedor):**
+  - vale igual nos dois modos;
+  - é um filhote redondo e sorridente, sem dentes nem garras à mostra; anda devagar e às vezes
+    senta e boceja;
+  - encostar nele faz Pipo quicar para trás, sem perda;
+  - não persegue o Pipo (o urso do Frostbite perseguia; aqui não);
+  - nunca bloqueia a porta por mais de 3 s.
 - **Progressão:** a fase seguinte é desbloqueada ao concluir a anterior. Fases já concluídas
   podem ser rejogadas no mapa.
 
@@ -217,7 +222,7 @@ Se o app for para segundo plano (`visibilitychange`), o jogo pausa sozinho.
 | 11 | `#3BCEAC` | Aurora, peixes comuns |
 | 12 | `#6BE36B` | Aurora |
 | 13 | `#8A6A4F` | Pedras da margem |
-| 14 | `#6B7280` | Foca, gaivota |
+| 14 | `#6B7280` | Gaivota, focinho do urso |
 | 15 | `#FF9EC7` | Bochecha do Pipo, festa |
 
 - **Branco contra azul:** a diferença entre bloco branco (5) e bloco pisado (3) está também no
@@ -240,7 +245,7 @@ caracteres convertidas em imagem na carga) ou em PNG próprio; a escolha fica em
 | Estrela-do-mar | 8 × 8 | Brilho (2) |
 | Gaivota e sombra | 16 × 10 | Voo (2), mergulho (1), grasnado (1) |
 | Caranguejo | 12 × 8 | Andar (2), dançar (2) |
-| Foca-dorminhoca | 24 × 12 | Dormir com "Zz" (2), rolar (4) |
+| Ursinho-polar | 24 × 16 | Andar (2), sentar (1), bocejar (2), quique ao encostar (1) |
 | Sol, lua, aurora | Sol 16 × 16; aurora em faixas | Aurora ondulando (4) |
 | Colônia (final) | 16 × 16, 3 variações | Dança (2) |
 | Ícones de interface | 12 × 12 a 24 × 24 | ▶, pausa, som ligado e desligado, ↻, mapa, cadeado, ✔, ✘, lixeira, troféu, carimbo, mão fantasma (2), seta de dica (2), celular girando (4) |
@@ -257,7 +262,7 @@ Tudo é sintetizado com Web Audio: ondas quadrada, triangular e ruído. Não há
 - pouso em bloco azul ("tuc");
 - *splash*, nado (bolhas), sair da água;
 - peixe (bip ascendente), peixe dourado (arpejo), estrela-do-mar (brilho);
-- gaivota (grasnado de aviso), caranguejo (clique), foca (ronco);
+- gaivota (grasnado de aviso), caranguejo (clique), ursinho (bocejo grave e curto, sem rugido);
 - bloco piscando (aviso);
 - porta aparecendo, entrar no iglu, fanfarra de fase concluída, carimbo;
 - dica (sininho), pausa, botões de menu, "VAI!" (acorde);
@@ -335,7 +340,7 @@ Os testes por script usam semente aleatória fixa para serem reproduzíveis.
 | 1 | Pousar numa fileira branca soma exatamente 1 tijolo e a torna azul; as 4 azuis voltam a branco; pousar na azul não soma |
 | 2 | No Diversão, a gaivota nunca faz o Pipo cair (teste forçado). No Aventura, pode fazer. O aviso (sombra e som) acontece ≥ 1 s antes |
 | 3 | Todo bloco pisca ≥ 1 s antes de afundar. Pipo sobre bloco que afunda cai e nada até a margem |
-| 4 | A foca nunca impede a entrada por mais de 3 s. Após a fase, aparece a tela final e os recordes são gravados |
+| 4 | O ursinho nunca impede a entrada por mais de 3 s nem faz o Pipo perder algo, nos dois modos. Após a fase, aparece a tela final e os recordes são gravados |
 
 ## 13. Plano de marcos
 
@@ -375,3 +380,17 @@ e o que não foi possível testar. A publicação acontece quando o mantenedor f
 4. Números (pontos e peixes) visíveis junto dos ícones.
 5. Modo Diversão: fases desbloqueadas uma a uma, com rejogar livre.
 6. Modo Aventura: castigo máximo é recomeçar a fase atual.
+7. **Ursinho-polar na fase 4, nos dois modos** (pedido do mantenedor após o M1). Ele substitui a
+   foca-dorminhoca. Registro de fato: não existem pinguins selvagens no Ártico, nem ursos-polares
+   na Antártida; a espécie que chega mais ao norte é o pinguim-de-galápagos, na linha do Equador.
+   O encontro dos dois é fantasia assumida do jogo. A aurora da fase 4 serve aos dois polos.
+
+## Mudanças após o M1
+
+- **Tela cheia:** é pedida ao soltar o dedo (`pointerup`), em qualquer tela, sempre que o jogo não
+  estiver em tela cheia. No M1 ela era pedida ao encostar (`pointerdown`), e o navegador recusava:
+  pelo HTML Standard, no toque só `pointerup` e `touchend` contam como gesto do usuário. O
+  desbloqueio de áudio foi para o mesmo evento.
+- **Medida real no aparelho:** o quadrado de 115 px CSS mediu 2,1 cm nos dois celulares (medido
+  pelo mantenedor). O mínimo de 2 cm está atendido.
+

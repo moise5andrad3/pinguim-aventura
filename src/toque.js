@@ -8,12 +8,13 @@ const HOLDOVER_PX = 8;
 let ultimo = { t: -1e9, x: 0, y: 0 };
 
 // aoToque(x, y): coordenadas lógicas; x === null significa "pulo reto" (teclado).
-// aoPrimeiroGesto(): chamada em todo toque, antes de aoToque (desbloqueio de áudio).
+// aoGesto(): chamada nos eventos que o navegador aceita como gesto do usuário. No toque, isso é
+// o pointerup (dedo saindo da tela), não o pointerdown (HTML Standard, "activation triggering
+// input event"). Tela cheia e desbloqueio de áudio só funcionam a partir desses eventos.
 export function iniciarToque(aoToque, aoGesto) {
   document.addEventListener('pointerdown', (e) => {
     e.preventDefault();
     if (!e.isPrimary) return;
-    aoGesto();
     const p = paraLogico(e.clientX, e.clientY);
     const agora = performance.now();
     const perto = Math.abs(p.x - ultimo.x) < HOLDOVER_PX && Math.abs(p.y - ultimo.y) < HOLDOVER_PX;
@@ -21,6 +22,10 @@ export function iniciarToque(aoToque, aoGesto) {
     ultimo = { t: agora, x: p.x, y: p.y };
     aoToque(p.x, p.y);
   }, { passive: false });
+
+  document.addEventListener('pointerup', (e) => {
+    if (e.isPrimary) aoGesto();
+  });
 
   // Evita menu de toque longo e gestos residuais.
   document.addEventListener('contextmenu', (e) => e.preventDefault());

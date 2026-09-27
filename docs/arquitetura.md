@@ -81,6 +81,8 @@ export const cena = {
   Valores fora de 0 a 320 são permitidos: as sobras também são zonas.
 - **Filtro de *holdover*:** um toque a menos de 120 ms do anterior e a menos de 8 px lógicos dele
   é descartado (PRD, seção 4).
+- **Gesto do usuário:** o jogo age no `pointerdown`, mas tela cheia, trava de paisagem e áudio
+  são pedidos no `pointerup`, sempre que o jogo não estiver em tela cheia.
 - **Prioridade do pulo:** perto do Pipo (menos de 24 px na horizontal), o toque é pulo mesmo
   dentro da área dos botões de canto (PRD, seção 5).
 - **Teclado de teste:** setas, Esc e M viram toques sintéticos equivalentes. Não é requisito.
@@ -120,8 +122,10 @@ export const cena = {
 
 ## Áudio (`audio.js`)
 
-- **Criação e desbloqueio:** `AudioContext` criado no primeiro `pointerdown`. Em todo toque, se
-  `state !== 'running'`, chama `resume()` (ADR-001, B2).
+- **Criação e desbloqueio:** `AudioContext` criado no primeiro `pointerup` (dedo saindo da
+  tela). Em todo `pointerup`, se `state !== 'running'`, chama `resume()` (ADR-001, B2). No
+  toque, só `pointerup` e `touchend` contam como gesto do usuário (HTML Standard); o
+  `pointerdown` não conta.
 - **Efeitos:** oscilador (quadrada, triangular) ou ruído com envelope curto. Um efeito é uma
   entrada de dados (`{onda, notas, duracao}`), não uma função por efeito.
 - **Música (M3):** sequenciador simples que agenda as notas 0,1 s à frente, com um `setInterval`
