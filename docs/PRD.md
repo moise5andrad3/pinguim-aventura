@@ -384,6 +384,8 @@ e o que não foi possível testar. A publicação acontece quando o mantenedor f
    foca-dorminhoca. Registro de fato: não existem pinguins selvagens no Ártico, nem ursos-polares
    na Antártida; a espécie que chega mais ao norte é o pinguim-de-galápagos, na linha do Equador.
    O encontro dos dois é fantasia assumida do jogo. A aurora da fase 4 serve aos dois polos.
+   Morsa e elefante-marinho-do-sul foram considerados como alternativas; o mantenedor manteve o
+   urso.
 
 ## Mudanças após o M1
 
