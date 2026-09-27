@@ -1,4 +1,4 @@
-// Abertura: título, Pipo animado e um botão de jogar que ocupa a tela toda.
+// Abertura: título, Pinguinzinho animado e um botão de jogar que ocupa a tela toda.
 // O áudio e a tela cheia (com trava de paisagem) são pedidos em main.js, ao soltar o dedo.
 import * as audio from '../audio.js';
 import { escreverCentro } from '../fonte.js';
@@ -37,7 +37,7 @@ export const cena = {
     escreverCentro('AVENTURA', 160, 22, 1, 3, 3);
     escreverCentro('PINGUIM', 160, 50, 1, 3, 3);
     const pulo = Math.abs(Math.sin(t / 15)) * 10;
-    tela.sprite(t % 180 < 8 ? 'pipo_pisca' : 'pipo', 152, 94 - pulo);
+    tela.sprite(t % 180 < 8 ? 'pinguim_pisca' : 'pinguim', 152, 94 - pulo);
     // botão jogar: triângulo piscando devagar
     const cor = t % 60 < 40 ? 9 : 8;
     for (let i = 0; i < 30; i++) {

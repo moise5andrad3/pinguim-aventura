@@ -83,7 +83,7 @@ export const cena = {
   é descartado (PRD, seção 4).
 - **Gesto do usuário:** o jogo age no `pointerdown`, mas tela cheia, trava de paisagem e áudio
   são pedidos no `pointerup`, sempre que o jogo não estiver em tela cheia.
-- **Prioridade do pulo:** perto do Pipo (menos de 24 px na horizontal), o toque é pulo mesmo
+- **Prioridade do pulo:** perto do Pinguinzinho (menos de 24 px na horizontal), o toque é pulo mesmo
   dentro da área dos botões de canto (PRD, seção 5).
 - **Teclado de teste:** setas, Esc e M viram toques sintéticos equivalentes. Não é requisito.
 
@@ -108,7 +108,7 @@ export const cena = {
   PRD, de `0` a `9` e `a` a `f`; o ponto `.` é transparente.
 
   ```js
-  pipo_parado: [
+  pinguim_parado: [
     '....0000....',
     '...055550...',
     ...
@@ -171,7 +171,7 @@ export const FASES = [
 
 ## Regras da fase (`cenas/jogo.js`)
 
-- **Estados do Pipo:** `margem`, `bloco`, `pulando`, `nadando`, `entrando`.
+- **Estados do Pinguinzinho:** `margem`, `bloco`, `pulando`, `nadando`, `entrando`.
 - **Faixas lógicas:**
   - margem: y 0 a 36;
   - fileira *i* (0 a 3): y `36 + 24*i` a `60 + 24*i`;
@@ -186,12 +186,12 @@ export const FASES = [
 - **Tijolos:** cada fileira tem cor, branca ou azul. Pousar em fileira branca a deixa azul e soma
   1 tijolo. Com as 4 azuis, todas voltam a branco. Quando os tijolos atingem a meta, a porta
   aparece.
-- **Entrada no iglu:** com a porta aberta e o Pipo na margem, ele anda sozinho até a porta. Isso
+- **Entrada no iglu:** com a porta aberta e o Pinguinzinho na margem, ele anda sozinho até a porta. Isso
   leva ao estado `entrando` e depois à cena `concluida`.
-- **Borda da tela:** com o Pipo sobre um bloco, x fica limitado a 8 a 312. Se o bloco deixar de
+- **Borda da tela:** com o Pinguinzinho sobre um bloco, x fica limitado a 8 a 312. Se o bloco deixar de
   estar sob ele, ele cai.
-- **Linha divisória do toque:** `clamp(yPipo, 61, 119)` (PRD, seção 5).
-- **Ganchos de teste:** `window.__jogo` expõe só leitura do estado (cena, estado do Pipo,
+- **Linha divisória do toque:** `clamp(yPinguinzinho, 61, 119)` (PRD, seção 5).
+- **Ganchos de teste:** `window.__jogo` expõe só leitura do estado (cena, estado do Pinguinzinho,
   tijolos, fileiras). O teste de conclusão da fase lê o estado e toca quando há bloco sob o
   destino. Não altera o jogo.
 

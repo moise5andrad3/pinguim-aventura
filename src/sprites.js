@@ -16,12 +16,12 @@ export const PALETA = [
   '#3BCEAC', // b peixes, aurora
   '#6BE36B', // c aurora
   '#8A6A4F', // d pedras
-  '#6B7280', // e foca, gaivota
+  '#6B7280', // e gaivota, focinho do urso
   '#FF9EC7', // f bochecha, festa
 ];
 
 const DESENHOS = {
-  pipo: [
+  pinguim: [
     '................',
     '.....000000.....',
     '....01111110....',
@@ -39,7 +39,7 @@ const DESENHOS = {
     '....0888008880..',
     '................',
   ],
-  pipo_pisca: [
+  pinguim_pisca: [
     '................',
     '.....000000.....',
     '....01111110....',
@@ -57,7 +57,7 @@ const DESENHOS = {
     '....0888008880..',
     '................',
   ],
-  pipo_pulo: [
+  pinguim_pulo: [
     '.....000000.....',
     '....01111110....',
     '...0111111110...',

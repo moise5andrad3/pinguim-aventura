@@ -57,7 +57,7 @@ function vagasIglu(meta) {
 }
 
 let modo, M, F, fase;
-let fileiras, pipo, tijolos, meta, porta, vagas, voando, peixes, peixesPegos, pontos;
+let fileiras, pinguim, tijolos, meta, porta, vagas, voando, peixes, peixesPegos, pontos;
 let quedasSeguidas, ajuda, pausado, passos, sorteio, proxPeixe;
 
 export const cena = {
@@ -71,7 +71,7 @@ export const cena = {
       azul: false,
       blocos: f.blocos.map(([x, w]) => ({ x, w })),
     }));
-    pipo = { x: 60, linha: -1, estado: 'margem', bloco: null, t: 0, vx: 0, y0: 0, destino: 0,
+    pinguim = { x: 60, linha: -1, estado: 'margem', bloco: null, t: 0, vx: 0, y0: 0, destino: 0,
       direita: true, alvo: null, guardado: null };
     meta = F.tijolos[modo];
     tijolos = 0;
@@ -99,10 +99,10 @@ export const cena = {
       audio.tocar('toque');
       return;
     }
-    // Perto do Pipo, o pulo tem prioridade sobre os botões de canto: a área de 2 cm dos botões
+    // Perto do Pinguinzinho, o pulo tem prioridade sobre os botões de canto: a área de 2 cm dos botões
     // se sobrepõe à zona "acima" quando ele está numa fileira de cima, perto da borda.
-    const pertoDoPipo = x !== null && pipo.estado !== 'margem' && Math.abs(x - pipo.x) < INCLINACAO_MAX;
-    const canto = pertoDoPipo ? null : noCanto(x, y);
+    const pertoDoPinguim = x !== null && pinguim.estado !== 'margem' && Math.abs(x - pinguim.x) < INCLINACAO_MAX;
+    const canto = pertoDoPinguim ? null : noCanto(x, y);
     if (canto === 'esq') {
       pausado = true;
       audio.tocar('toque');
@@ -123,7 +123,7 @@ export const cena = {
     passos++;
     if (ajuda > 0) ajuda--;
     moverBlocos();
-    moverPipo();
+    moverPinguinzinho();
     moverPeixes();
     for (const v of voando) v.t++;
     voando = voando.filter((v) => v.t < 30);
@@ -134,14 +134,14 @@ export const cena = {
     desenharCenario(tela);
     desenharBlocos(tela);
     desenharPeixes(tela);
-    desenharPipo(tela);
+    desenharPinguinzinho(tela);
     desenharHud(tela);
     if (pausado) desenharPausa(tela);
   },
 
   estadoTeste() {
     return {
-      estado: pipo.estado, linha: pipo.linha, x: pipo.x, tijolos, meta, porta, pausado, ajuda,
+      estado: pinguim.estado, linha: pinguim.linha, x: pinguim.x, tijolos, meta, porta, pausado, ajuda,
       quedasSeguidas, pontos, peixesPegos,
       assistencia: M.assistencia,
       fileiras: fileiras.map((f) => ({
@@ -163,7 +163,7 @@ function sobre(b, x, folga) {
 }
 
 function tocarNoJogo(x, y) {
-  const p = pipo;
+  const p = pinguim;
   if (p.estado === 'nadando' || p.estado === 'entrando') return;
   if (p.estado === 'pulando') {
     if (PULO_PASSOS - p.t <= GUARDA_PASSOS) p.guardado = { x, y };
@@ -187,7 +187,7 @@ function tocarNoJogo(x, y) {
 }
 
 function pular(destino, inclinacao) {
-  const p = pipo;
+  const p = pinguim;
   const vOrigem = p.estado === 'bloco' ? fileiras[p.linha].vel * M.velocidade : 0;
   p.vx = vOrigem + inclinacao / PULO_PASSOS;
   p.y0 = pe(p.linha);
@@ -211,8 +211,8 @@ function moverBlocos() {
   }
 }
 
-function moverPipo() {
-  const p = pipo;
+function moverPinguinzinho() {
+  const p = pinguim;
   if (p.estado === 'margem') {
     const alvo = porta ? X_PORTA : p.alvo;
     if (alvo !== null) {
@@ -253,7 +253,7 @@ function moverPipo() {
 }
 
 function pousar() {
-  const p = pipo;
+  const p = pinguim;
   const d = p.destino;
   if (d < 0) {
     p.estado = 'margem';
@@ -293,7 +293,7 @@ function pisarFileira(d) {
     const vaga = vagas[tijolos];
     tijolos++;
     pontos += 10;
-    voando.push({ x0: pipo.x, y0: pe(d) - 8, x1: vaga.x, y1: vaga.y, t: 0 });
+    voando.push({ x0: pinguim.x, y0: pe(d) - 8, x1: vaga.x, y1: vaga.y, t: 0 });
     if (tijolos === meta) {
       porta = true;
       audio.tocar('porta');
@@ -305,7 +305,7 @@ function pisarFileira(d) {
 }
 
 function cair() {
-  const p = pipo;
+  const p = pinguim;
   p.estado = 'nadando';
   p.t = 0;
   p.bloco = null;
@@ -318,8 +318,8 @@ function cair() {
   }
 }
 
-function yPipoAgora() {
-  const p = pipo;
+function yPinguimAgora() {
+  const p = pinguim;
   if (p.estado !== 'pulando') return pe(p.linha);
   const k = p.t / PULO_PASSOS;
   return p.y0 + (pe(p.destino) - p.y0) * k - 12 * Math.sin(Math.PI * k);
@@ -335,12 +335,12 @@ function moverPeixes() {
       vel: (daEsquerda ? 1 : -1) * F.peixes.vel,
     });
   }
-  const py = yPipoAgora() - 6;
+  const py = yPinguimAgora() - 6;
   for (const f of peixes) {
     f.x += f.vel;
     const fy = topoBloco(f.linha) - 2 - Math.abs(Math.sin(f.x / 18)) * 10;
     f.y = fy;
-    if (!f.pego && pipo.estado !== 'nadando' && Math.abs(f.x - pipo.x) < 10 && Math.abs(fy - py) < 10) {
+    if (!f.pego && pinguim.estado !== 'nadando' && Math.abs(f.x - pinguim.x) < 10 && Math.abs(fy - py) < 10) {
       f.pego = true;
       peixesPegos++;
       pontos += 50;
@@ -406,8 +406,8 @@ function desenharPeixes(tela) {
   for (const f of peixes) tela.sprite('peixe', f.x - 5, f.y - 3, f.vel > 0);
 }
 
-function desenharPipo(tela) {
-  const p = pipo;
+function desenharPinguinzinho(tela) {
+  const p = pinguim;
   if (p.estado === 'nadando') {
     const yAgua = pe(p.linha);
     if (p.t < NADO_SUBMERSO) {
@@ -418,16 +418,16 @@ function desenharPipo(tela) {
     } else {
       const k = (p.t - NADO_SUBMERSO) / (NADO_TOTAL - NADO_SUBMERSO);
       const y = yAgua + (PE_MARGEM - yAgua) * k - 24 * Math.sin(Math.PI * k);
-      tela.sprite('pipo_pulo', p.x - 8, y - 14, !p.direita);
+      tela.sprite('pinguim_pulo', p.x - 8, y - 14, !p.direita);
     }
   } else if (p.estado === 'entrando') {
     const k = p.t / ENTRADA_PASSOS;
     tela.ctx.globalAlpha = 1 - k;
-    tela.sprite('pipo', p.x - 8, PE_MARGEM - 14 - k * 3, false);
+    tela.sprite('pinguim', p.x - 8, PE_MARGEM - 14 - k * 3, false);
     tela.ctx.globalAlpha = 1;
   } else {
-    const nome = p.estado === 'pulando' ? 'pipo_pulo' : (passos % 180 < 8 ? 'pipo_pisca' : 'pipo');
-    tela.sprite(nome, p.x - 8, yPipoAgora() - 14, !p.direita);
+    const nome = p.estado === 'pulando' ? 'pinguim_pulo' : (passos % 180 < 8 ? 'pinguim_pisca' : 'pinguim');
+    tela.sprite(nome, p.x - 8, yPinguimAgora() - 14, !p.direita);
   }
   for (const v of voando) {
     const k = v.t / 30;

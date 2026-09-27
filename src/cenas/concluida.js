@@ -1,4 +1,4 @@
-// Fase concluída: fanfarra, carimbo do Pipo (recompensa única dos dois modos), peixes e pontos.
+// Fase concluída: fanfarra, carimbo do Pinguinzinho (recompensa única dos dois modos), peixes e pontos.
 import * as audio from '../audio.js';
 import { escrever, escreverCentro } from '../fonte.js';
 import { concluirFase } from '../salvar.js';
@@ -44,7 +44,7 @@ export const cena = {
       const r = Math.round(34 - 10 * k);
       circulo(tela, 90, 100, r, 9);
       circulo(tela, 90, 100, r - 3, 5);
-      tela.sprite('pipo', 82, 92);
+      tela.sprite('pinguim', 82, 92);
     }
     tela.sprite('peixe', 170, 84);
     escrever(String(info.peixes), 186, 84, 5, 2);

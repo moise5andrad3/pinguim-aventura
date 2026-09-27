@@ -286,6 +286,7 @@ fazer uma busca simples depois da escolha.
 ## Decisão do GATE 1 (aprovada pelo mantenedor em 2026-09-27)
 
 1. **Conceito: B**, "Iglu no Gelo" (base Frostbite), com as adaptações descritas acima.
-2. **Nomes:** jogo **Aventura Pinguim**; pinguim **Pipo**.
+2. **Nomes:** jogo **Aventura Pinguim**; pinguim **Pipo**, renomeado depois para **Pinguinzinho**
+   (pedido do mantenedor, ver `PRD.md`).
 3. **Alvos de toque:** mínimo de **2 cm** (~115 px CSS nos aparelhos-alvo). O `CLAUDE.md` foi
    ajustado.

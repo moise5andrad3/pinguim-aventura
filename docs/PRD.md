@@ -12,7 +12,7 @@ ficam nos dados das fases, não no código.
 
 ## 1. Visão
 
-Um jogo de celular em estilo anos 80 em que o pinguim Pipo pula entre blocos de gelo para
+Um jogo de celular em estilo anos 80 em que o Pinguinzinho pula entre blocos de gelo para
 construir seu iglu. É feito para que o jogador de 6 anos termine sozinho e o de 10 anos queira
 bater os próprios recordes.
 
@@ -54,14 +54,14 @@ os próprios recordes.
 
 ### Loop
 
-1. Pipo começa na **margem** (faixa de cima, onde fica o iglu).
+1. Pinguinzinho começa na **margem** (faixa de cima, onde fica o iglu).
 2. Abaixo dela há **4 fileiras** de blocos de gelo deslizando, em sentidos alternados, e o mar.
-3. O jogador toca **acima** ou **abaixo** do Pipo para pular uma fileira para cima ou para baixo.
+3. O jogador toca **acima** ou **abaixo** do Pinguinzinho para pular uma fileira para cima ou para baixo.
 4. Pousar numa fileira **branca** faz a fileira inteira ficar **azul** e acrescenta **1 tijolo**
    ao iglu, com som de "plim" e o tijolo voando até o iglu. Pousar numa fileira azul não dá
    tijolo.
 5. Quando as 4 fileiras estão azuis, todas voltam a ficar brancas.
-6. Com o iglu completo, aparece a **porta** brilhando. Pipo volta à margem e entra sozinho no
+6. Com o iglu completo, aparece a **porta** brilhando. Pinguinzinho volta à margem e entra sozinho no
    iglu, e a fase termina.
 
 ### Regras de movimento
@@ -70,12 +70,12 @@ os próprios recordes.
   - O pulo é sempre para a fileira vizinha.
   - A posição horizontal do toque inclina o pulo, no máximo **24 px lógicos** para o lado
     (calibrar).
-  - Tocar exatamente acima do Pipo gera um pulo reto.
-- **Margem:** na margem, tocar na própria faixa da margem faz o Pipo andar até aquele ponto.
-  Tocar abaixo faz o Pipo pular para a fileira 1.
-- **Borda da tela:** se o bloco levar o Pipo até a borda, ele anda sobre o bloco para ficar na
+  - Tocar exatamente acima do Pinguinzinho gera um pulo reto.
+- **Margem:** na margem, tocar na própria faixa da margem faz o Pinguinzinho andar até aquele ponto.
+  Tocar abaixo faz o Pinguinzinho pular para a fileira 1.
+- **Borda da tela:** se o bloco levar o Pinguinzinho até a borda, ele anda sobre o bloco para ficar na
   tela. Se o bloco acabar debaixo dele, ele cai.
-- **Queda na água:** mergulho com *splash*, depois Pipo nada de volta até a margem (~1,5 s). Não
+- **Queda na água:** mergulho com *splash*, depois Pinguinzinho nada de volta até a margem (~1,5 s). Não
   é morte.
 - **Toques extras:**
   - Toques durante um pulo são ignorados, exceto nos últimos 150 ms: o toque fica guardado e é
@@ -93,8 +93,8 @@ os próprios recordes.
 | Blocos | Longos e lentos | Mais curtos e mais rápidos |
 | Ajuda automática | Após 3 quedas seguidas, os blocos alargam 50% por 20 s e aparece uma seta brilhando | Não |
 | Dica por inatividade | Após 7 s parado, a mão fantasma mostra onde tocar (P4) | Após 7 s parado, a mão fantasma mostra onde tocar (P4) |
-| Gaivota | Só balança o Pipo | Empurra: se ele sair do bloco, cai |
-| Caranguejo | Encostar faz os dois "dançarem" 0,5 s, sem perda | Empurra o Pipo para o lado; pode derrubá-lo |
+| Gaivota | Só balança o Pinguinzinho | Empurra: se ele sair do bloco, cai |
+| Caranguejo | Encostar faz os dois "dançarem" 0,5 s, sem perda | Empurra o Pinguinzinho para o lado; pode derrubá-lo |
 | Tijolos do iglu por fase | 10 / 12 / 14 / 16 (calibrar) | 16 / 16 / 16 / 16 (calibrar) |
 
 ### Pontuação
@@ -109,7 +109,7 @@ Todos os valores abaixo são para calibrar.
 | Estrela-do-mar (3 escondidas por fase, nas fases 3 e 4) | 300 |
 | Bônus de sol (Aventura: segundos restantes × 10) | variável |
 
-- **Recompensa única, igual nos dois modos:** cada fase concluída ganha um **carimbo do Pipo** no
+- **Recompensa única, igual nos dois modos:** cada fase concluída ganha um **carimbo do Pinguinzinho** no
   mapa. Não há medalhas.
 - **Números visíveis nos dois modos:** pontos e peixes aparecem como ícone mais número, o que
   ajuda a reconhecer numerais (P3).
@@ -125,7 +125,7 @@ Tela em paisagem, 320 × 180 px lógicos. As medidas são aproximadas.
 |      ZONA "ACIMA" = tudo acima da linha divisória            |  (y 0 a 36)
 |==============================================================|
 |   <<==   [======]        [======]          [======]          |  fileira 1
-|   ==>>        [======]         [==(Pipo)==]                  |  fileira 2
+|   ==>>        [======]         [==(Pinguinzinho)==]                  |  fileira 2
 |- - - - - - - - - - - (linha divisória) - - - - - - - - - - - |
 |   <<==   [======]        [======]          [======]          |  fileira 3
 |   ==>>        [======]         [======]                      |  fileira 4
@@ -136,18 +136,18 @@ Tela em paisagem, 320 × 180 px lógicos. As medidas são aproximadas.
 
 - **Faixas da tela:** margem de y 0 a 36, 4 fileiras de 24 px de y 36 a 132, e mar de y 132 a
   180.
-- **Linha divisória:** fica na altura do Pipo, limitada ao intervalo de y 61 a 119. Assim cada
+- **Linha divisória:** fica na altura do Pinguinzinho, limitada ao intervalo de y 61 a 119. Assim cada
   zona tem pelo menos 61 px lógicos, o que dá ≥ 2 cm tanto na escala 6 quanto na 5 (ADR-001).
-  - Na maior parte do tempo, "acima do Pipo" e "abaixo do Pipo" valem literalmente.
+  - Na maior parte do tempo, "acima do Pinguinzinho" e "abaixo do Pinguinzinho" valem literalmente.
   - Só perto da margem e da fileira 4 existe uma faixa estreita em que a zona segue a linha
-    limitada, não a posição do Pipo.
+    limitada, não a posição do Pinguinzinho.
 - **Cobertura:** as duas zonas cobrem a tela inteira, inclusive as sobras laterais fora da imagem
   de 320 × 180.
 - **Botões fixos:** `[II]` pausa e `[som]` silenciar, nos cantos superiores. O ícone é pequeno,
   mas a área de toque é um quadrado de **2 cm** encostado no canto. Nessa área o toque aciona o
   botão, não o pulo.
-  - **Exceção (achada no M1):** com o Pipo numa fileira, um toque a menos de 24 px dele na
-    horizontal é sempre pulo, mesmo dentro da área do canto. Sem isso, com o Pipo perto da borda,
+  - **Exceção (achada no M1):** com o Pinguinzinho numa fileira, um toque a menos de 24 px dele na
+    horizontal é sempre pulo, mesmo dentro da área do canto. Sem isso, com o Pinguinzinho perto da borda,
     tocar "acima dele" pausaria o jogo. O botão continua funcionando em todo o resto da área.
 - **Momento do toque:** a ação acontece em `pointerdown`. Não há toque duplo, multitoque nem
   arraste (P2). Com dois dedos ao mesmo tempo, vale só o primeiro.
@@ -158,7 +158,7 @@ Tela em paisagem, 320 × 180 px lógicos. As medidas são aproximadas.
 
 | # | Cenário | Mecânica nova | Obstáculos | Coletáveis | Duração-alvo (opinião, calibrar) | Critério de conclusão |
 |---|---|---|---|---|---|---|
-| 1 | Baía Calma, manhã | Pular para cima e para baixo; tijolos | Só o mar; blocos longos e lentos | Peixes | 2 a 3 min | Iglu completo e Pipo entra |
+| 1 | Baía Calma, manhã | Pular para cima e para baixo; tijolos | Só o mar; blocos longos e lentos | Peixes | 2 a 3 min | Iglu completo e Pinguinzinho entra |
 | 2 | Correnteza, tarde | Fileiras com velocidades diferentes; blocos mais curtos | Gaivotas travessas (sombra e grasnado 1 s antes do mergulho) | Peixes e 1 peixe dourado | 2 a 3 min | Igual |
 | 3 | Gelo Fino, entardecer | Blocos que afundam por 1,5 s e voltam; piscam 1 s antes | Caranguejos dançarinos andando sobre blocos | Peixes e 3 estrelas-do-mar | ~3 min | Igual |
 | 4 | Noite de Aurora | **Ursinho-polar** passeando na margem na frente do iglu; esperar a vez de entrar | Gaivotas e caranguejos; poucos blocos afundando | Peixes, 1 peixe dourado e 3 estrelas-do-mar | 3 a 4 min | Igual, e depois vem a tela final |
@@ -167,8 +167,8 @@ Tela em paisagem, 320 × 180 px lógicos. As medidas são aproximadas.
   - vale igual nos dois modos;
   - é um filhote redondo e sorridente, sem dentes nem garras à mostra; anda devagar e às vezes
     senta e boceja;
-  - encostar nele faz Pipo quicar para trás, sem perda;
-  - não persegue o Pipo (o urso do Frostbite perseguia; aqui não);
+  - encostar nele faz Pinguinzinho quicar para trás, sem perda;
+  - não persegue o Pinguinzinho (o urso do Frostbite perseguia; aqui não);
   - nunca bloqueia a porta por mais de 3 s.
 - **Progressão:** a fase seguinte é desbloqueada ao concluir a anterior. Fases já concluídas
   podem ser rejogadas no mapa.
@@ -183,13 +183,13 @@ Abertura -> Escolha do modo -> Mapa -> [Demonstração] -> Jogo -> Fase concluí
 
 | Tela | Conteúdo | Interação |
 |---|---|---|
-| Abertura | Título "AVENTURA PINGUIM" em fonte pixel, Pipo animado, música-tema | Um botão ▶ grande. O primeiro toque libera o áudio, pede tela cheia e trava paisagem (ADR) |
+| Abertura | Título "AVENTURA PINGUIM" em fonte pixel, Pinguinzinho animado, música-tema | Um botão ▶ grande. O primeiro toque libera o áudio, pede tela cheia e trava paisagem (ADR) |
 | Escolha do modo | Dois cartões grandes: pinguim pequeno com a palavra "DIVERSÃO" e pinguim grande com a palavra "AVENTURA" | Tocar no cartão |
 | Mapa | 4 ilhas ligadas por um caminho; cadeado nas bloqueadas; carimbo nas concluídas. Botões de voltar e de recordes | Tocar numa ilha |
-| Demonstração | Na primeira vez em cada fase: mão fantasma toca acima e abaixo e Pipo pula; depois a palavra "VAI!" com som | Qualquer toque pula a demonstração |
+| Demonstração | Na primeira vez em cada fase: mão fantasma toca acima e abaixo e Pinguinzinho pula; depois a palavra "VAI!" com som | Qualquer toque pula a demonstração |
 | Jogo | Seção 5 | Seção 5 |
 | Pausa | Jogo congelado e escurecido; 3 ícones grandes: ▶ continuar, ↻ recomeçar, mapa | Recomeçar e mapa pedem confirmação com ✔ verde e ✘ vermelho (Sesame) |
-| Fase concluída | Pipo entra no iglu, fanfarra, tijolos e peixes contados com "plim", carimbo, palavra "BOA!" | ▶ próxima fase, ou mapa |
+| Fase concluída | Pinguinzinho entra no iglu, fanfarra, tijolos e peixes contados com "plim", carimbo, palavra "BOA!" | ▶ próxima fase, ou mapa |
 | Final | A colônia faz festa na aurora com o iglu gigante; música de festa; palavra "FIM" | ▶ vai para os recordes |
 | Recordes | Por modo e por fase: carimbo, peixes, pontos e melhor tempo (modo Aventura) | Apagar recordes: botão de lixeira que exige **segurar 3 s**. É proteção para adulto; a criança nunca precisa desse gesto |
 | Aviso de retrato | Celular desenhado girando para deitado, sem texto | Some ao girar |
@@ -213,17 +213,17 @@ Se o app for para segundo plano (`visibilitychange`), o jogo pausa sozinho.
 | 2 | `#2A5FA8` | Mar |
 | 3 | `#5B8FD9` | Bloco pisado (azul) |
 | 4 | `#9FD8F5` | Sombra do gelo, céu de manhã |
-| 5 | `#F4F8FF` | Bloco branco, neve, barriga do Pipo |
+| 5 | `#F4F8FF` | Bloco branco, neve, barriga do Pinguinzinho |
 | 6 | `#C9D6E8` | Sombra da neve |
 | 7 | `#FFD23F` | Sol, peixe dourado, destaque de dica (P3) |
-| 8 | `#FF8C42` | Bico e pés do Pipo, entardecer |
+| 8 | `#FF8C42` | Bico e pés do Pinguinzinho, entardecer |
 | 9 | `#E84855` | Caranguejo, peixe-vida |
 | 10 | `#7B2D8B` | Aurora, céu do entardecer |
 | 11 | `#3BCEAC` | Aurora, peixes comuns |
 | 12 | `#6BE36B` | Aurora |
 | 13 | `#8A6A4F` | Pedras da margem |
 | 14 | `#6B7280` | Gaivota, focinho do urso |
-| 15 | `#FF9EC7` | Bochecha do Pipo, festa |
+| 15 | `#FF9EC7` | Bochecha do Pinguinzinho, festa |
 
 - **Branco contra azul:** a diferença entre bloco branco (5) e bloco pisado (3) está também no
   **brilho**, não só no matiz. O bloco pisado ganha ainda uma marca de pegada, para não depender
@@ -237,7 +237,7 @@ caracteres convertidas em imagem na carga) ou em PNG próprio; a escolha fica em
 
 | Sprite | Tamanho | Animações (quadros) |
 |---|---|---|
-| Pipo | 16 × 16 | Parado (2), pulo (3), pouso (1), nado (4), balanço (2), dança (4), andar (2), entrar no iglu (3), comemorar (4) |
+| Pinguinzinho | 16 × 16 | Parado (2), pulo (3), pouso (1), nado (4), balanço (2), dança (4), andar (2), entrar no iglu (3), comemorar (4) |
 | Bloco de gelo | 8 × 10 por segmento; comprimento variável | Branco, azul com pegada, piscando (2), afundando (3) |
 | Iglu | Tijolos 8 × 6; porta 10 × 12 | Tijolo chegando (3), porta brilhando (2) |
 | Mar | Blocos de 16 × 8 | Ondas (2) |
@@ -304,7 +304,7 @@ Tudo é sintetizado com Web Audio: ondas quadrada, triangular e ruído. Não há
   - anotações de playtest ficam no Drive do mantenedor;
   - o PRD usa "jogador de 6 anos" e "jogador de 10 anos".
 - **Propriedade intelectual:**
-  - nome ("Aventura Pinguim"), personagem ("Pipo"), arte, música e textos são originais;
+  - nome ("Aventura Pinguim"), personagem ("Pinguinzinho"), arte, música e textos são originais;
   - nada de sprites, trilhas, logotipos, textos ou nomes de Antarctic Adventure ou Frostbite (ex.:
     "Penta", "Frostbite Bailey");
   - a inspiração se limita às mecânicas: pular entre fileiras e construir o iglu.
@@ -336,11 +336,11 @@ Os testes por script usam semente aleatória fixa para serem reproduzíveis.
 
 | Fase | Critério |
 |---|---|
-| Todas | Um script de toques conclui a fase nos dois modos. O iglu atinge o número de tijolos da fase, a porta aparece, Pipo entra e a tela de fase concluída surge. Há captura de tela de cada fase |
+| Todas | Um script de toques conclui a fase nos dois modos. O iglu atinge o número de tijolos da fase, a porta aparece, Pinguinzinho entra e a tela de fase concluída surge. Há captura de tela de cada fase |
 | 1 | Pousar numa fileira branca soma exatamente 1 tijolo e a torna azul; as 4 azuis voltam a branco; pousar na azul não soma |
-| 2 | No Diversão, a gaivota nunca faz o Pipo cair (teste forçado). No Aventura, pode fazer. O aviso (sombra e som) acontece ≥ 1 s antes |
-| 3 | Todo bloco pisca ≥ 1 s antes de afundar. Pipo sobre bloco que afunda cai e nada até a margem |
-| 4 | O ursinho nunca impede a entrada por mais de 3 s nem faz o Pipo perder algo, nos dois modos. Após a fase, aparece a tela final e os recordes são gravados |
+| 2 | No Diversão, a gaivota nunca faz o Pinguinzinho cair (teste forçado). No Aventura, pode fazer. O aviso (sombra e som) acontece ≥ 1 s antes |
+| 3 | Todo bloco pisca ≥ 1 s antes de afundar. Pinguinzinho sobre bloco que afunda cai e nada até a margem |
+| 4 | O ursinho nunca impede a entrada por mais de 3 s nem faz o Pinguinzinho perder algo, nos dois modos. Após a fase, aparece a tela final e os recordes são gravados |
 
 ## 13. Plano de marcos
 
@@ -375,7 +375,7 @@ e o que não foi possível testar. A publicação acontece quando o mantenedor f
 1. PRD aprovado. Os modos se chamam **Diversão** (pensado para o jogador de 6 anos) e **Aventura**
    (pensado para o de 10 anos). Como as crianças vão trocar de modo entre si, a Aventura não deve
    ficar complicada: ela só acrescenta relógio e risco.
-2. Recompensa unificada: **carimbo do Pipo no mapa por fase, nos dois modos**. Não há medalhas.
+2. Recompensa unificada: **carimbo do Pinguinzinho no mapa por fase, nos dois modos**. Não há medalhas.
 3. **Nome do jogador retirado** do escopo.
 4. Números (pontos e peixes) visíveis junto dos ícones.
 5. Modo Diversão: fases desbloqueadas uma a uma, com rejogar livre.
@@ -395,4 +395,6 @@ e o que não foi possível testar. A publicação acontece quando o mantenedor f
   desbloqueio de áudio foi para o mesmo evento.
 - **Medida real no aparelho:** o quadrado de 115 px CSS mediu 2,1 cm nos dois celulares (medido
   pelo mantenedor). O mínimo de 2 cm está atendido.
-
+- **Nome do protagonista:** trocado de "Pipo" para **"Pinguinzinho"** (pedido do mantenedor). É
+  uma palavra comum do português e não identifica ninguém. Por enquanto o nome não aparece escrito
+  no jogo; se aparecer, será só como texto dentro do jogo.
