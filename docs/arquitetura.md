@@ -15,6 +15,7 @@ manifest.webmanifest    instalação (M3)
 sw.js                   service worker: cache offline (M3)
 .nojekyll               GitHub Pages sem Jekyll (ADR-001)
 icones/                 ícones PNG 192 e 512 da instalação (M3)
+ferramentas/icones.mjs  gera os ícones a partir do desenho do Pinguinzinho (desenvolvimento)
 src/
   main.js               inicialização, escala, loop de passo fixo, troca de cenas, pausa automática
   tela.js               renderizador pixel-perfect: canvas lógico 320x180 e escala inteira
@@ -132,8 +133,12 @@ export const cena = {
   `pointerdown` não conta.
 - **Efeitos:** oscilador (quadrada, triangular) ou ruído com envelope curto. Um efeito é uma
   entrada de dados (`{onda, notas, duracao}`), não uma função por efeito.
-- **Música (M3):** sequenciador simples que agenda as notas 0,1 s à frente, com um `setInterval`
-  de 25 ms.
+- **Música (M3):** sequenciador simples que agenda as notas 0,12 s à frente, com um
+  `setInterval` de 25 ms.
+  - As músicas são dados em `MUSICAS`: vozes com onda, volume e notas em colcheias.
+  - Cada cena declara `musica(d)`, e `main.js` pede a música na troca de cena.
+  - A fase usa a mesma melodia com tom e andamento próprios.
+  - Em segundo plano, o `AudioContext` é suspenso e depois retomado.
 - **Volumes e mudo:** ganho da música abaixo do ganho dos efeitos; mudo por um `GainNode` mestre,
   com estado salvo.
 
@@ -206,6 +211,9 @@ export const FASES = [
 - **Atualização:** na instalação de uma versão nova, `skipWaiting` e remoção dos caches antigos. A
   versão nova vale na próxima abertura.
 - **Rede:** nenhuma requisição fora da origem (não existe nenhuma para interceptar).
+- **Registro:** em `main.js`, só em contexto seguro (HTTPS ou localhost).
+- **Ao publicar mudança nos arquivos do jogo:** trocar `VERSAO` em `sw.js`. Se entrar arquivo
+  novo, incluí-lo em `ARQUIVOS`. O teste de offline confere o cache.
 
 ## Testes (`tests/`)
 

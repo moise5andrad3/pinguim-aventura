@@ -8,7 +8,7 @@ function modoVazio() {
 }
 
 function padrao() {
-  return { versao: 1, som: true, modos: { diversao: modoVazio(), aventura: modoVazio() } };
+  return { versao: 1, som: true, demos: [false, false, false, false], modos: { diversao: modoVazio(), aventura: modoVazio() } };
 }
 
 export const dados = carregar();
@@ -16,7 +16,10 @@ export const dados = carregar();
 function carregar() {
   try {
     const d = JSON.parse(localStorage.getItem(CHAVE));
-    if (d && d.versao === 1) return d;
+    if (d && d.versao === 1) {
+      if (!d.demos) d.demos = [false, false, false, false];
+      return d;
+    }
   } catch (e) { /* segue com o padrão */ }
   return padrao();
 }

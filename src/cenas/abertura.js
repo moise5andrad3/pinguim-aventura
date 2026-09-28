@@ -8,6 +8,8 @@ import { noCanto } from '../tela.js';
 let t = 0;
 
 export const cena = {
+  musica: () => ({ nome: 'tema' }),
+
   entrar() {
     t = 0;
   },

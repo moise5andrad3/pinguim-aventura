@@ -7,6 +7,8 @@ import { dados, gravar } from '../salvar.js';
 let t = 0;
 
 export const cena = {
+  musica: () => ({ nome: 'tema' }),
+
   entrar() {
     t = 0;
   },

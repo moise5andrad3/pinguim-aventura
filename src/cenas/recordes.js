@@ -18,6 +18,8 @@ function naLixeira(x, y) {
 }
 
 export const cena = {
+  musica: () => ({ nome: 'tema' }),
+
   entrar(d) {
     modo = d.modo;
     segurando = 0;

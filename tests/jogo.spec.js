@@ -4,7 +4,7 @@ const { test, expect, devices } = require('@playwright/test');
 const path = require('path');
 const fs = require('fs');
 
-const CAPTURAS = path.join(__dirname, '..', 'docs', 'verificacao', 'm2');
+const CAPTURAS = path.join(__dirname, '..', 'docs', 'verificacao', 'm3');
 fs.mkdirSync(CAPTURAS, { recursive: true });
 const captura = (page, nome) =>
   page.screenshot({ path: path.join(CAPTURAS, `${nome}-${test.info().project.name}.png`) });
@@ -31,7 +31,7 @@ async function comProgresso(page, liberada) {
   }, liberada);
 }
 
-async function abrirFase(page, modo, fase) {
+async function abrirFase(page, modo, fase, pularDemo = true) {
   await page.goto('/index.html');
   await page.waitForFunction(() => window.__jogo && window.__jogo.cena() === 'abertura');
   await tocar(page, 160, 140);
@@ -40,6 +40,7 @@ async function abrirFase(page, modo, fase) {
   await page.waitForFunction(() => window.__jogo.cena() === 'mapa');
   await tocar(page, 40 + fase * 80, 120);
   await page.waitForFunction(() => window.__jogo.cena() === 'jogo');
+  if (pularDemo && (await estado(page)).demo) await tocar(page, 160, 100);
 }
 
 // Pulo seguro: procura uma inclinação (-24 a 24 px, como um jogador faria ao tocar mais para o
@@ -78,6 +79,10 @@ async function jogar(page, amostra = null, limite = 240000) {
     if (await cenaAtual(page) !== 'jogo') break;
     const s = await estado(page);
     if (amostra) await amostra(s);
+    if (s.demo) {
+      await tocar(page, 160, 100);
+      continue;
+    }
     if (!s.reiniciando && !s.pausa && (s.estado === 'margem' || s.estado === 'bloco')) {
       if (s.linha === 3) descendo = false;
       if (s.linha === -1) descendo = true;
@@ -128,6 +133,7 @@ test('carrega sem erro, sem rede após o load, tela cheia, escala inteira e bot�
   await tocar(page, 160, 140);
   await page.waitForFunction(() => window.__jogo.cena() === 'modo');
   await page.waitForFunction(() => window.__jogo.audio() === 'running');
+  expect(await page.evaluate(() => window.__jogo.musica())).toBe('tema');
   // Tela cheia pedida ao soltar o dedo (pointerup), que é quando o navegador aceita o gesto.
   await page.waitForFunction(() => document.fullscreenElement !== null);
   await captura(page, 'modo');
@@ -151,7 +157,9 @@ test('carrega sem erro, sem rede após o load, tela cheia, escala inteira e bot�
   expect(medidas.h).toBe(180 * medidas.k);
   expect(medidas.cantoCss).toBeGreaterThanOrEqual(72);
   expect(problemas).toEqual([]);
-  expect(depois).toEqual([]);
+  // Depois do load, só a própria origem: instalação do service worker e manifest (G3/G7).
+  const origem = new URL(page.url()).origin;
+  expect(depois.filter((u) => new URL(u).origin !== origem)).toEqual([]);
 });
 
 test('retrato mostra o aviso de girar o celular', async ({ browser }) => {
@@ -304,6 +312,8 @@ test('Aventura: quando o sol se põe a fase recomeça; no Diversão não há rel
     await tocar(page, 40, 120);
     await page.clock.runFor(300);
     expect(await cenaAtual(page)).toBe('jogo');
+    if ((await estado(page)).demo) await tocar(page, 160, 100);
+    await page.clock.runFor(100);
   };
   await entrarNaFase(240);
   await page.clock.runFor(60000);
@@ -361,6 +371,8 @@ test('pausa sozinho quando o app vai para segundo plano', async ({ page }) => {
     document.dispatchEvent(new Event('visibilitychange'));
   });
   expect(await page.evaluate(() => window.__jogo.loopParado())).toBe(false);
+  // espera > 120 ms: dois toques no mesmo ponto em menos tempo contam como um só (holdover)
+  await page.waitForTimeout(200);
   await tocar(page, 160, 100);
   expect((await estado(page)).pausa).toBeNull();
 });
@@ -431,6 +443,7 @@ for (const fase of [1, 2, 3]) {
       await page.waitForTimeout(1600);
       await tocar(page, 160, 100);
       await page.waitForFunction(() => window.__jogo.cena() === 'final');
+      expect(await page.evaluate(() => window.__jogo.musica())).toBe('festa');
       await page.waitForTimeout(3200);
       await captura(page, 'final');
       await tocar(page, 160, 100);
@@ -508,6 +521,102 @@ test('recordes: apagar só depois de segurar a lixeira por 3 s', async ({ page }
   salvo = await page.evaluate(() => JSON.parse(localStorage.getItem('aventura-pinguim')));
   expect(salvo.modos.diversao.liberada).toBe(1);
   expect(await cenaAtual(page)).toBe('recordes');
+});
+
+test('demonstração da mão fantasma na 1ª vez; toque pula; depois não aparece mais', async ({ page }) => {
+  await abrirFase(page, 'diversao', 0, false);
+  let s = await estado(page);
+  expect(s.demo).toBe(true);
+  expect(await page.evaluate(() => window.__jogo.musica())).toBe('fase');
+  await page.waitForTimeout(1500);
+  await captura(page, 'demonstracao');
+  await tocar(page, 160, 100);
+  s = await estado(page);
+  expect(s.demo).toBe(false);
+  expect(s.estado).toBe('margem');
+  const salvo = await page.evaluate(() => JSON.parse(localStorage.getItem('aventura-pinguim')));
+  expect(salvo.demos[0]).toBe(true);
+  await tocar(page, 5, 5);
+  await tocar(page, 280, 100);
+  await tocar(page, 260, 100);
+  await page.waitForFunction(() => window.__jogo.cena() === 'mapa');
+  await tocar(page, 40, 120);
+  await page.waitForFunction(() => window.__jogo.cena() === 'jogo');
+  expect((await estado(page)).demo).toBe(false);
+});
+
+test('dica aparece após 7 s sem tocar e some com um toque', async ({ page }) => {
+  await abrirFase(page, 'diversao', 0);
+  expect((await estado(page)).dica).toBe(false);
+  await page.waitForTimeout(7600);
+  expect((await estado(page)).dica).toBe(true);
+  await captura(page, 'dica');
+  await tocar(page, 160, 20);
+  expect((await estado(page)).dica).toBe(false);
+});
+
+test('som desligado continua desligado ao abrir o jogo de novo (G8)', async ({ page }) => {
+  await page.goto('/index.html');
+  await page.waitForFunction(() => window.__jogo && window.__jogo.cena() === 'abertura');
+  await tocar(page, 318, 2);
+  let salvo = await page.evaluate(() => JSON.parse(localStorage.getItem('aventura-pinguim')));
+  expect(salvo.som).toBe(false);
+  await page.reload();
+  await page.waitForFunction(() => window.__jogo && window.__jogo.cena() === 'abertura');
+  salvo = await page.evaluate(() => JSON.parse(localStorage.getItem('aventura-pinguim')));
+  expect(salvo.som).toBe(false);
+  await captura(page, 'abertura-mudo');
+});
+
+test('offline: depois da 1ª visita, o jogo abre e roda sem rede (G3, G4)', async ({ page, context }) => {
+  await page.goto('/index.html');
+  await page.waitForFunction(() => window.__jogo && window.__jogo.cena() === 'abertura');
+  await page.evaluate(() => navigator.serviceWorker.ready);
+  await page.waitForFunction(async () => {
+    const c = await caches.open('ap-v3');
+    return (await c.keys()).length >= 20;
+  });
+  await context.setOffline(true);
+  const falhas = [];
+  const problemas = [];
+  page.on('requestfailed', (r) => falhas.push(r.url()));
+  page.on('console', (m) => { if (m.type() === 'error') problemas.push(m.text()); });
+  page.on('pageerror', (e) => problemas.push(String(e)));
+  await page.reload();
+  await page.waitForFunction(() => window.__jogo && window.__jogo.cena() === 'abertura');
+  await tocar(page, 160, 140);
+  await tocar(page, 80, 100);
+  await page.waitForFunction(() => window.__jogo.cena() === 'mapa');
+  await tocar(page, 40, 120);
+  await page.waitForFunction(() => window.__jogo.cena() === 'jogo');
+  if ((await estado(page)).demo) await tocar(page, 160, 100);
+  await page.waitForTimeout(3000);
+  await tocar(page, 160, 175);
+  await page.waitForTimeout(2000);
+  await captura(page, 'offline');
+  expect(falhas).toEqual([]);
+  expect(problemas).toEqual([]);
+  await context.setOffline(false);
+});
+
+test('manifest de instalação completo, com ícones de 192 e 512 px', async ({ page }) => {
+  await page.goto('/index.html');
+  const r = await page.evaluate(async () => {
+    const m = await (await fetch('manifest.webmanifest')).json();
+    const tamanhos = await Promise.all(m.icons.map((i) => new Promise((ok) => {
+      const img = new Image();
+      img.onload = () => ok(`${img.naturalWidth}x${img.naturalHeight}`);
+      img.onerror = () => ok('erro');
+      img.src = i.src;
+    })));
+    return { m, tamanhos };
+  });
+  expect(r.m.name).toBe('Aventura Pinguim');
+  expect(r.m.display).toBe('fullscreen');
+  expect(r.m.orientation).toBe('landscape');
+  expect(r.m.start_url).toBeTruthy();
+  expect(r.tamanhos).toEqual(r.m.icons.map((i) => i.sizes));
+  expect(r.tamanhos).toEqual(['192x192', '512x512']);
 });
 
 test('modo de diagnóstico mostra escala e quadrado de 2 cm', async ({ page }) => {

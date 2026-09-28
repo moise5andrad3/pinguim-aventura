@@ -33,7 +33,123 @@ const SONS = {
   aviso: { onda: 'triangle', notas: [[660, 0.05], [0, 0.05], [660, 0.05]], vol: 0.08 },
   perda: { onda: 'triangle', notas: [[523, 0.12], [440, 0.12], [392, 0.25]], vol: 0.14 },
   cadeado: { onda: 'square', notas: [[196, 0.05], [196, 0.05]], vol: 0.05 },
+  dica: { onda: 'triangle', notas: [[1568, 0.08], [2093, 0.14]], vol: 0.08 },
+  vai: { onda: 'square', notas: [[523, 0.08], [659, 0.08], [784, 0.16]], vol: 0.07 },
 };
+
+// Músicas originais como dados. Cada voz: onda, volume e notas [nome, duração em colcheias];
+// null é pausa. Todas as vozes de uma música somam o mesmo número de colcheias (laço).
+const MUSICAS = {
+  tema: {
+    bpm: 150,
+    vozes: [
+      { onda: 'square', vol: 0.05, notas: [
+        ['E5', 1], ['G5', 1], ['C6', 2], ['B5', 1], ['G5', 1], ['E5', 2],
+        ['F5', 1], ['A5', 1], ['C6', 2], ['B5', 2], ['G5', 2],
+        ['E5', 1], ['G5', 1], ['C6', 1], ['E6', 1], ['D6', 2], ['C6', 2],
+        ['B5', 1], ['G5', 1], ['A5', 1], ['B5', 1], ['C6', 4],
+      ] },
+      { onda: 'triangle', vol: 0.12, notas: [
+        ['C3', 2], ['G3', 2], ['C3', 2], ['G3', 2], ['F3', 2], ['C4', 2], ['F3', 2], ['C4', 2],
+        ['C3', 2], ['G3', 2], ['E3', 2], ['G3', 2], ['G3', 2], ['D4', 2], ['G3', 2], ['C3', 2],
+      ] },
+    ],
+  },
+  fase: {
+    bpm: 140,
+    vozes: [
+      { onda: 'square', vol: 0.035, notas: [
+        ['C5', 2], ['E5', 1], ['G5', 1], ['A5', 2], ['G5', 2],
+        ['F5', 2], ['A5', 1], ['F5', 1], ['E5', 2], ['C5', 2],
+        ['D5', 1], ['E5', 1], ['F5', 1], ['G5', 1], ['A5', 2], ['G5', 2],
+        ['E5', 2], ['D5', 2], ['C5', 2], [null, 2],
+      ] },
+      { onda: 'triangle', vol: 0.1, notas: [
+        ['C3', 4], ['G2', 4], ['F2', 4], ['C3', 4], ['D3', 4], ['G2', 4], ['C3', 4], ['G2', 4],
+      ] },
+    ],
+  },
+  festa: {
+    bpm: 170,
+    vozes: [
+      { onda: 'square', vol: 0.05, notas: [
+        ['C6', 1], ['C6', 1], ['G5', 1], ['C6', 1], ['E6', 2], ['C6', 2],
+        ['D6', 1], ['D6', 1], ['B5', 1], ['D6', 1], ['F6', 2], ['D6', 2],
+        ['E6', 1], ['D6', 1], ['C6', 1], ['B5', 1], ['A5', 2], ['G5', 2],
+        ['C6', 2], ['G5', 2], ['C6', 4],
+      ] },
+      { onda: 'triangle', vol: 0.12, notas: [
+        ['C3', 2], ['G3', 2], ['C3', 2], ['G3', 2], ['G2', 2], ['D3', 2], ['G2', 2], ['D3', 2],
+        ['A2', 2], ['E3', 2], ['F2', 2], ['G2', 2], ['C3', 2], ['G2', 2], ['C3', 4],
+      ] },
+    ],
+  },
+};
+
+const MUSICA_VOL = 0.6;   // música abaixo dos efeitos (PRD, seção 9)
+const ANTECEDENCIA = 0.12; // agenda notas até 0,12 s à frente
+const NOTAS = { C: 0, D: 2, E: 4, F: 5, G: 7, A: 9, B: 11 };
+
+let musica = null;        // { nome, transpor, bpm }
+let tocando = null;       // estado do sequenciador
+let relogio = null;
+let ganhoMusica = null;
+
+function freq(nome, transpor) {
+  const midi = 12 * (Number(nome[nome.length - 1]) + 1) + NOTAS[nome[0]] + (nome.includes('#') ? 1 : 0);
+  return 440 * 2 ** ((midi + transpor - 69) / 12);
+}
+
+function agendar() {
+  if (!tocando || !ac || ac.state !== 'running') return;
+  const def = MUSICAS[tocando.nome];
+  const colcheia = 30 / (tocando.bpm || def.bpm);
+  const limite = ac.currentTime + ANTECEDENCIA;
+  def.vozes.forEach((voz, i) => {
+    const v = tocando.vozes[i];
+    if (v.t < ac.currentTime) v.t = ac.currentTime + 0.02;
+    while (v.t < limite) {
+      const [nota, dur] = voz.notas[v.i];
+      const d = dur * colcheia;
+      if (nota) {
+        const osc = ac.createOscillator();
+        const g = ac.createGain();
+        osc.type = voz.onda;
+        osc.frequency.value = freq(nota, tocando.transpor || 0);
+        g.gain.setValueAtTime(voz.vol, v.t);
+        g.gain.setValueAtTime(voz.vol, v.t + d * 0.75);
+        g.gain.linearRampToValueAtTime(0.0001, v.t + d * 0.95);
+        osc.connect(g).connect(ganhoMusica);
+        osc.start(v.t);
+        osc.stop(v.t + d);
+      }
+      v.t += d;
+      v.i = (v.i + 1) % voz.notas.length;
+    }
+  });
+}
+
+function comecarMusica() {
+  if (!ac || !musica) return;
+  if (tocando && tocando.nome === musica.nome && tocando.transpor === musica.transpor) return;
+  tocando = { ...musica, vozes: MUSICAS[musica.nome].vozes.map(() => ({ i: 0, t: 0 })) };
+  if (!relogio) relogio = setInterval(agendar, 25);
+}
+
+// Pede uma música (ou null para silêncio). Se o áudio ainda não foi liberado, ela começa
+// assim que for.
+export function tocarMusica(pedido) {
+  musica = pedido;
+  if (!pedido) {
+    tocando = null;
+    return;
+  }
+  comecarMusica();
+}
+
+export function musicaAtual() {
+  return tocando ? tocando.nome : null;
+}
 
 export function desbloquear() {
   if (!ac) {
@@ -43,8 +159,21 @@ export function desbloquear() {
     mestre = ac.createGain();
     mestre.gain.value = mudo ? 0 : 1;
     mestre.connect(ac.destination);
+    ganhoMusica = ac.createGain();
+    ganhoMusica.gain.value = MUSICA_VOL;
+    ganhoMusica.connect(mestre);
+    comecarMusica();
   }
   if (ac.state !== 'running') ac.resume().catch(() => {});
+}
+
+// Segundo plano: suspende o áudio; ao voltar, retoma (o gesto do usuário já aconteceu antes).
+export function suspender() {
+  if (ac && ac.state === 'running') ac.suspend().catch(() => {});
+}
+
+export function retomar() {
+  if (ac && ac.state === 'suspended') ac.resume().catch(() => {});
 }
 
 export function estado() {
