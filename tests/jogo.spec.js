@@ -34,7 +34,7 @@ function puloSeguro(s, destino) {
   });
 }
 
-test('carrega sem erro, sem rede após o load, escala inteira e botões de 2 cm', async ({ page }) => {
+test('carrega sem erro, sem rede após o load, tela cheia, escala inteira e botões de 2 cm', async ({ page }) => {
   const problemas = [];
   page.on('console', (m) => {
     if (m.type() === 'error' || m.type() === 'warning') problemas.push(m.text());
@@ -51,7 +51,9 @@ test('carrega sem erro, sem rede após o load, escala inteira e botões de 2 cm'
 
   await tocar(page, 160, 140);
   await page.waitForFunction(() => window.__jogo.cena() === 'jogo');
-  expect(await page.evaluate(() => window.__jogo.audio())).toBe('running');
+  await page.waitForFunction(() => window.__jogo.audio() === 'running');
+  // Tela cheia pedida ao soltar o dedo (pointerup), que é quando o navegador aceita o gesto.
+  await page.waitForFunction(() => document.fullscreenElement !== null);
   await page.waitForTimeout(3000);
   await tocar(page, 160, 175);
   await page.waitForTimeout(2000);

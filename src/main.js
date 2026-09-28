@@ -70,7 +70,7 @@ function desenharRetrato() {
   const h = deitado ? 68 : 120;
   tela.ret(160 - w / 2, 90 - h / 2, w, h, 5);
   tela.ret(160 - w / 2 + 5, 90 - h / 2 + 5, w - 10, h - 10, 2);
-  tela.sprite('pipo', 152, 82);
+  tela.sprite('pinguim', 152, 82);
 }
 
 function desenharDiag() {
@@ -133,7 +133,10 @@ iniciarToque(
   (x, y) => {
     if (!retrato()) cena.toque(x, y);
   },
-  audio.desbloquear,
+  () => {
+    audio.desbloquear();
+    tela.telaCheia();
+  },
 );
 trocarCena('abertura');
 iniciarLoop();

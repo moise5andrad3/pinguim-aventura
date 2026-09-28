@@ -4,7 +4,7 @@ Jogo web para celular em estilo anos 80: protagonista pinguim, quatro fases, con
 toque. Público: um jogador de 6 anos (principal) e um de 10 anos, da família do mantenedor. Uso
 doméstico. Dev é meio, não fim: a solução mais simples que entregue um jogo divertido e estável.
 
-Conceito aprovado (GATE 1): **B, base Frostbite**; protagonista **Pipo**. Ver `docs/brainstorm.md`.
+Conceito aprovado (GATE 1): **B, base Frostbite**; protagonista **Pinguinzinho**. Ver `docs/brainstorm.md`.
 
 ## Regras invioláveis (repositório público)
 

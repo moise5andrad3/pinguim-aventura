@@ -1,8 +1,8 @@
 # Aventura Pinguim
 
-Jogo web para celular em estilo anos 80, feito para uso em família. O protagonista é o pinguim
-Pipo, que pula entre blocos de gelo para construir seu iglu. Inspirado nas mecânicas de dois
-clássicos de 1983, Antarctic Adventure e Frostbite, com arte, som e nomes originais.
+Jogo web para celular em estilo anos 80, feito para uso em família. O protagonista é o
+Pinguinzinho, que pula entre blocos de gelo para construir seu iglu. Inspirado nas mecânicas de
+dois clássicos de 1983, Antarctic Adventure e Frostbite, com arte, som e nomes originais.
 
 ## Status
 
