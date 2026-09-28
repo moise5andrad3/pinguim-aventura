@@ -3,7 +3,7 @@
 // no modo Aventura; pausa com confirmação. Toda a configuração vem de fases.js.
 import { MODOS, FASES, PISCA_SEG, AFUNDADO_SEG } from '../fases.js';
 import * as audio from '../audio.js';
-import { escrever } from '../fonte.js';
+import { escrever, escreverCentro } from '../fonte.js';
 import { dados, gravar } from '../salvar.js';
 import { noCanto } from '../tela.js';
 
@@ -22,6 +22,8 @@ const NADO_TOTAL = 78;           // 1,3 s até voltar à margem
 const ENTRADA_PASSOS = 48;
 const REINICIO_PASSOS = 90;      // 1,5 s de aviso antes de recomeçar a fase (modo Aventura)
 const AVISO_GAIVOTA = 60;        // PRD: sombra e grasnado 1 s antes
+const DEMO_PASSOS = 210;         // demonstração da mão fantasma: 3,5 s na 1ª vez em cada fase
+const OCIOSO_DICA = 420;         // dica após 7 s sem tocar (P4)
 
 const topoBloco = (i) => 36 + 24 * i + 14;
 const pe = (linha) => (linha < 0 ? PE_MARGEM : topoBloco(linha));
@@ -63,8 +65,14 @@ let fileiras, pinguim, tijolos, meta, porta, vagas, voando, peixes, peixesPegos,
 let quedasSeguidas, ajuda, passos, sorteio, proxPeixe, douradoSaiu;
 let gaivotas, proxGaivota, caranguejos, estrelas, estrelasPegas, urso;
 let vidas, reiniciando, reinicios, pausa, balanco, danca, ultimoEmpurrao, toques, quedasPor;
+let demo, ocioso;
+
+// Música da fase: a mesma melodia com tom e andamento próprios de cada fase.
+const VARIACOES = [{ transpor: 0, bpm: 140 }, { transpor: 2, bpm: 150 }, { transpor: -3, bpm: 150 }, { transpor: 5, bpm: 118 }];
 
 export const cena = {
+  musica: (d) => ({ nome: 'fase', ...VARIACOES[d.fase] }),
+
   entrar(d) {
     entrada = d;
     modo = d.modo;
@@ -107,6 +115,8 @@ export const cena = {
     vidas = M.vidas;
     reiniciando = 0;
     reinicios = d.reinicios || 0;
+    demo = dados.demos[fase] ? 0 : DEMO_PASSOS;
+    ocioso = 0;
     pausa = null;
     balanco = 0;
     danca = 0;
@@ -121,6 +131,11 @@ export const cena = {
 
   toque(x, y) {
     if (reiniciando) return;
+    ocioso = 0;
+    if (demo) {
+      terminarDemo();
+      return;
+    }
     if (pausa) {
       tocarNaPausa(x);
       return;
@@ -146,6 +161,14 @@ export const cena = {
 
   atualizar() {
     if (pausa) return;
+    if (demo) {
+      demo--;
+      if (demo === 0) terminarDemo();
+      return;
+    }
+    const parado = !reiniciando && (pinguim.estado === 'bloco' || (pinguim.estado === 'margem' && !porta));
+    ocioso = parado ? ocioso + 1 : 0;
+    if (ocioso === OCIOSO_DICA) audio.tocar('dica');
     if (reiniciando) {
       reiniciando--;
       if (reiniciando === 0) cena.entrar({ ...entrada, reinicios: reinicios + 1 });
@@ -179,6 +202,8 @@ export const cena = {
     desenharGaivotas(tela);
     desenharHud(tela);
     if (pausa) desenharPausa(tela);
+    if (demo) desenharDemo(tela);
+    else if (ocioso >= OCIOSO_DICA && !pausa) desenharDica(tela);
     if (reiniciando) desenharReinicio(tela);
   },
 
@@ -187,7 +212,7 @@ export const cena = {
       fase, modo, estado: pinguim.estado, linha: pinguim.linha, destino: pinguim.destino, x: pinguim.x,
       tijolos, meta, porta,
       pausa, ajuda, quedasSeguidas, pontos, peixesPegos, estrelasPegas, vidas, reinicios,
-      reiniciando, passos, sol: M.sol ? M.sol - passos / 60 : null,
+      demo: demo > 0, dica: ocioso >= OCIOSO_DICA, reiniciando, passos, sol: M.sol ? M.sol - passos / 60 : null,
       assistencia: M.assistencia, toques: { ...toques }, quedasPor: { ...quedasPor },
       urso: urso ? { x: urso.x } : null,
       ateAfundarAtual: pinguim.bloco ? finito(ateAfundar(pinguim.bloco)) : 999,
@@ -419,6 +444,20 @@ function cair() {
     vidas--;
     if (vidas <= 0) perderFase();
   }
+}
+
+function terminarDemo() {
+  demo = 0;
+  dados.demos[fase] = true;
+  gravar();
+  audio.tocar('vai');
+}
+
+// Destino sugerido pela dica: descer até a última fileira e subir quando a porta abrir.
+function destinoSugerido() {
+  const p = pinguim;
+  if (porta) return p.linha - 1;
+  return p.linha < 3 ? p.linha + 1 : p.linha - 1;
 }
 
 // Só no modo Aventura (sol se pôs ou acabaram os peixes-vida): recomeça a fase atual.
@@ -696,27 +735,37 @@ function desenharUrso(tela) {
   const d = u.dir;
   const sentado = u.sentado > 0;
   const passo = !sentado && Math.floor(passos / 12) % 2;
-  const corpoY = sentado ? 27 : 25;
-  // contorno e corpo
-  tela.circulo(u.x, corpoY, 8, 0);
-  tela.circulo(u.x + d * 8, 19, 6, 0);
-  tela.circulo(u.x + d * 5, 13, 2, 0);
-  tela.circulo(u.x + d * 11, 13, 2, 0);
-  tela.circulo(u.x, corpoY, 7, 5);
-  tela.circulo(u.x + d * 8, 19, 5, 5);
-  tela.circulo(u.x + d * 5, 13, 1, 5);
-  tela.circulo(u.x + d * 11, 13, 1, 5);
-  tela.ret(u.x - 6, corpoY + 3, 12, 2, 6);
-  // patas
+  const cy = sentado ? 26 : 24;
+  const hx = u.x + d * 9;
+  const hy = sentado ? 16 : 18;
+  // patas (atrás do corpo)
   if (!sentado) {
-    tela.ret(u.x - 6 + (passo ? 1 : 0), 30, 3, 3, 0);
-    tela.ret(u.x + 3 - (passo ? 1 : 0), 30, 3, 3, 0);
+    for (const px of [-7, -3, 3, 7]) {
+      const k = (px < 0) === Boolean(passo) ? 1 : 0;
+      tela.ret(u.x + px - 1, 29 - k, 4, 5 + k, 0);
+      tela.ret(u.x + px, 29 - k, 2, 4 + k, 5);
+    }
   }
-  // focinho, nariz, olho e bocejo
-  tela.ret(u.x + d * 11 - 2, 19, 5, 3, 14);
-  tela.ret(u.x + d * 13 - 1, 19, 2, 1, 0);
-  tela.ret(u.x + d * 8, 16, 1, 1, 0);
-  if (sentado && u.sentado % 60 < 30) tela.ret(u.x + d * 11 - 1, 21, 3, 2, 9);
+  // corpo oval: contorno e preenchimento
+  for (const dx of [-4, 4]) tela.circulo(u.x + dx, cy, 7, 0);
+  tela.ret(u.x - 4, cy - 7, 8, 15, 0);
+  for (const dx of [-4, 4]) tela.circulo(u.x + dx, cy, 6, 5);
+  tela.ret(u.x - 4, cy - 6, 8, 13, 5);
+  tela.ret(u.x - 8, cy + 3, 16, 2, 6);
+  // cabeça, orelhas rosadas
+  tela.circulo(hx, hy, 6, 0);
+  tela.circulo(hx - 4, hy - 5, 2, 0);
+  tela.circulo(hx + 3, hy - 5, 2, 0);
+  tela.circulo(hx, hy, 5, 5);
+  tela.circulo(hx - 4, hy - 5, 1, 15);
+  tela.circulo(hx + 3, hy - 5, 1, 15);
+  // focinho, nariz, olho, bochecha e boca (sorriso ou bocejo)
+  tela.ret(hx + d * 3 - 2, hy + 1, 5, 3, 6);
+  tela.ret(hx + d * 5 - 1, hy, 2, 2, 0);
+  tela.ret(hx + d * 1, hy - 2, 1, 2, 0);
+  tela.ret(hx - d * 2 - 1, hy + 1, 2, 1, 15);
+  if (sentado && u.sentado % 60 < 30) tela.ret(hx + d * 3 - 1, hy + 3, 3, 2, 9);
+  else tela.ret(hx + d * 3 - 1, hy + 4, 3, 1, 0);
 }
 
 function desenharPinguim(tela) {
@@ -741,7 +790,10 @@ function desenharPinguim(tela) {
     tela.sprite('pinguim', p.x - 8, PE_MARGEM - 14 - k * 3, false);
     tela.ctx.globalAlpha = 1;
   } else {
-    const nome = p.estado === 'pulando' ? 'pinguim_pulo' : (passos % 180 < 8 ? 'pinguim_pisca' : 'pinguim');
+    const andando = p.estado === 'margem' && (porta || p.alvo !== null);
+    let nome = passos % 180 < 8 ? 'pinguim_pisca' : 'pinguim';
+    if (p.estado === 'pulando') nome = 'pinguim_pulo';
+    else if (andando && Math.floor(passos / 8) % 2) nome = 'pinguim_anda';
     tela.sprite(nome, p.x - 8 + tremor, yPinguimAgora() - 14, virado);
   }
   for (const v of voando) {
@@ -817,3 +869,35 @@ function desenharReinicio(tela) {
   tela.sprite(M.sol && passos >= M.sol * 60 ? (F.noite ? 'lua' : 'sol') : 'peixe_vida', 148, 40, false, 2);
   icone(tela, 'recomecar', 160, 98);
 }
+
+// Mão fantasma: vai até o bloco logo abaixo do Pinguinzinho, toca duas vezes e aparece "VAI!".
+function desenharDemo(tela) {
+  const k = DEMO_PASSOS - demo;
+  const alvoX = pinguim.x;
+  const alvoY = 46;
+  if (k >= 150) {
+    escreverCentro('VAI!', 160, 70, 7, 4, 0);
+    return;
+  }
+  const ida = Math.min(1, k / 60);
+  let x = 260 + (alvoX - 260) * ida;
+  let y = 150 + (alvoY - 150) * ida;
+  if (k >= 60) {
+    const apertando = (k - 60) % 45 < 12;
+    if (apertando) {
+      y += 2;
+      const r = 3 + ((k - 60) % 45);
+      for (const [dx, dy] of [[-r, 0], [r, 0], [0, -r], [0, r]]) tela.ret(alvoX + dx - 1, alvoY + dy - 1, 3, 3, 7);
+    }
+  }
+  tela.sprite('mao', x - 4, y);
+}
+
+function desenharDica(tela) {
+  if (Math.floor(ocioso / 20) % 2) return;
+  const d = destinoSugerido();
+  const y = d < 0 ? 28 : 46 + 24 * d;
+  tela.ret(pinguim.x - 2, y - 2, 5, 5, 7);
+  tela.sprite('mao', pinguim.x - 4, y + 2);
+}
+

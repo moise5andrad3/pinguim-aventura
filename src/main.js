@@ -32,6 +32,7 @@ function trocarCena(nome, d = {}) {
   nomeCena = nome;
   cena = CENAS[nome];
   cena.entrar(d);
+  audio.tocarMusica(cena.musica ? cena.musica(d) : null);
 }
 
 for (const c of Object.values(CENAS)) c.trocar = trocarCena;
@@ -111,8 +112,10 @@ document.addEventListener('visibilitychange', () => {
   if (document.hidden) {
     if (cena.pausar) cena.pausar();
     pararLoop();
+    audio.suspender();
   } else {
     iniciarLoop();
+    audio.retomar();
   }
 });
 
@@ -126,6 +129,7 @@ window.__jogo = {
   paraTela: tela.paraTela,
   escala: () => tela.escala,
   audio: () => audio.estado(),
+  musica: () => audio.musicaAtual(),
   retrato,
   loopParado: () => pedido === null,
 };
@@ -147,3 +151,8 @@ iniciarToque(
 );
 trocarCena('abertura');
 iniciarLoop();
+
+// Offline e instalação: o service worker guarda o jogo no aparelho (ADR-001).
+if ('serviceWorker' in navigator && window.isSecureContext) {
+  navigator.serviceWorker.register('sw.js').catch(() => {});
+}

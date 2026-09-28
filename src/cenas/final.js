@@ -6,6 +6,8 @@ let t = 0;
 let modo = 'diversao';
 
 export const cena = {
+  musica: () => ({ nome: 'festa' }),
+
   entrar(d) {
     modo = d.modo;
     t = 0;
@@ -20,7 +22,6 @@ export const cena = {
 
   atualizar() {
     t++;
-    if (t % 150 === 0) audio.tocar('fanfarra');
   },
 
   desenhar(tela) {

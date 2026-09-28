@@ -18,6 +18,8 @@ export function carimbo(tela, cx, cy, r) {
 }
 
 export const cena = {
+  musica: () => ({ nome: 'tema' }),
+
   entrar(d) {
     modo = d.modo;
     t = 0;
