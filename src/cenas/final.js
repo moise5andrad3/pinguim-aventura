@@ -54,7 +54,7 @@ export const cena = {
       tela.sprite(i % 2 ? 'pinguim_pulo' : 'pinguim', x, 134 - pulo(i), (Math.floor(t / 20) + i) % 2 === 0);
     }
     tela.sprite('pinguim_pulo', 144, 128 - pulo(9) * 2, false, 2);
-    escreverCentro('FIM', 160, 44, 7, 4, 0);
+    escreverCentro('FIM', 160, 24, 7, 4, 0);
     if (t >= 180 && t % 60 < 40) {
       for (let i = 0; i < 24; i++) {
         const w = i < 12 ? i : 24 - i;
