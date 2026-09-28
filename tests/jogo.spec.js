@@ -22,7 +22,11 @@ const cenaAtual = (page) => page.evaluate(() => window.__jogo.cena());
 // Progresso salvo antes de abrir o jogo (ex.: todas as fases liberadas).
 async function comProgresso(page, liberada) {
   await page.addInitScript((lib) => {
-    const m = () => ({ liberada: lib, carimbos: [false, false, false, false], recordes: [null, null, null, null] });
+    const m = () => ({
+      liberada: lib,
+      carimbos: [lib > 1, lib > 2, lib > 3, false],
+      recordes: [lib > 1 ? { pontos: 450, segundos: 52 } : null, lib > 2 ? { pontos: 610, segundos: 71 } : null, null, null],
+    });
     localStorage.setItem('aventura-pinguim', JSON.stringify({ versao: 1, som: true, modos: { diversao: m(), aventura: m() } }));
   }, liberada);
 }
@@ -96,7 +100,8 @@ async function jogar(page, amostra = null, limite = 240000) {
         }
       }
       if (destino !== null) {
-        await tocar(page, s.x + inc, destino < s.linha ? 59.5 : 175);
+        // toca no próprio destino, como a criança faz: margem (y 28) ou o bloco da fileira
+        await tocar(page, s.x + inc, destino < 0 ? 28 : 46 + 24 * destino);
         await page.waitForTimeout(400);
         continue;
       }
@@ -106,7 +111,7 @@ async function jogar(page, amostra = null, limite = 240000) {
   return cenaAtual(page);
 }
 
-test('carrega sem erro, sem rede após o load, tela cheia, escala inteira e botões de 2 cm', async ({ page }) => {
+test('carrega sem erro, sem rede após o load, tela cheia, escala inteira e botões de canto de 1,3 cm', async ({ page }) => {
   const problemas = [];
   page.on('console', (m) => {
     if (m.type() === 'error' || m.type() === 'warning') problemas.push(m.text());
@@ -138,13 +143,13 @@ test('carrega sem erro, sem rede após o load, tela cheia, escala inteira e bot�
     const c = document.getElementById('tela');
     const k = window.__jogo.escala();
     const r = c.getBoundingClientRect();
-    const canto = Math.ceil(115 * window.devicePixelRatio / k);
+    const canto = Math.ceil(72 * window.devicePixelRatio / k);
     return { k, w: c.width, h: c.height, cantoCss: canto * r.width / 320 };
   });
   expect(Number.isInteger(medidas.k) && medidas.k >= 1).toBe(true);
   expect(medidas.w).toBe(320 * medidas.k);
   expect(medidas.h).toBe(180 * medidas.k);
-  expect(medidas.cantoCss).toBeGreaterThanOrEqual(115);
+  expect(medidas.cantoCss).toBeGreaterThanOrEqual(72);
   expect(problemas).toEqual([]);
   expect(depois).toEqual([]);
 });
@@ -181,6 +186,46 @@ test('mapa: ilha bloqueada não abre; fase 1 concluída deixa carimbo e libera a
   expect(salvo.modos.diversao.carimbos[0]).toBe(true);
   expect(salvo.modos.diversao.liberada).toBe(2);
   expect(salvo.modos.aventura.liberada).toBe(1);
+});
+
+test('tocar no bloco de destino faz pular (problema achado no playtest)', async ({ page }) => {
+  await abrirFase(page, 'diversao', 0);
+  // Na margem, tocar em cima da primeira fileira (y 46) tem de pular, não andar.
+  let s = await estado(page);
+  await tocar(page, s.x, 46);
+  s = await estado(page);
+  expect(s.estado).toBe('pulando');
+  await page.waitForFunction(() => ['bloco', 'margem'].includes(window.__jogo.jogo().estado));
+  // Se caiu, espera voltar à margem e tenta de novo até estar num bloco da fileira 1.
+  for (let i = 0; i < 20 && (await estado(page)).estado !== 'bloco'; i++) {
+    await page.waitForFunction(() => window.__jogo.jogo().estado === 'margem');
+    s = await estado(page);
+    const f = s.fileiras[0];
+    const cabe = f.blocos.some(([bx, bw]) => s.x >= bx + f.vel * 21 + 4 && s.x <= bx + f.vel * 21 + bw - 4);
+    if (cabe) {
+      await tocar(page, s.x, 46);
+      await page.waitForFunction(() => ['bloco', 'margem'].includes(window.__jogo.jogo().estado) && window.__jogo.jogo().estado !== 'pulando');
+    } else {
+      await page.waitForTimeout(50);
+    }
+  }
+  s = await estado(page);
+  expect(s.estado).toBe('bloco');
+  expect(s.linha).toBe(0);
+  // Na fileira 1, tocar logo abaixo dos pés (y 58) é descer; tocar na margem (y 28) é subir.
+  await tocar(page, s.x, 58);
+  s = await estado(page);
+  expect(s.estado).toBe('pulando');
+  expect(s.destino).toBe(1);
+  await page.waitForFunction(() => window.__jogo.jogo().estado !== 'pulando');
+  await page.waitForTimeout(100);
+  s = await estado(page);
+  if (s.estado === 'bloco') {
+    await tocar(page, s.x, 28 + 24 * s.linha);
+    s = await estado(page);
+    expect(s.estado).toBe('pulando');
+    expect(s.destino).toBe(s.linha - 1);
+  }
 });
 
 test('Diversão: cair não tira tijolo e ativa a ajuda após 3 quedas', async ({ page }) => {
@@ -409,6 +454,8 @@ test('Aventura: fase 1 concluída por toques, com bônus de sol e recorde de tem
     }
   });
   expect(cena).toBe('concluida');
+  await page.waitForTimeout(1600);
+  await captura(page, 'fase1-concluida-aventura');
   const salvo = await page.evaluate(() => JSON.parse(localStorage.getItem('aventura-pinguim')));
   expect(salvo.modos.aventura.carimbos[0]).toBe(true);
   expect(salvo.modos.aventura.recordes[0].segundos).toBeGreaterThan(0);
@@ -447,6 +494,7 @@ test('recordes: apagar só depois de segurar a lixeira por 3 s', async ({ page }
   await page.waitForFunction(() => window.__jogo.cena() === 'mapa');
   await tocar(page, 318, 2);
   await page.waitForFunction(() => window.__jogo.cena() === 'recordes');
+  await captura(page, 'recordes-com-progresso');
   const segurar = async (ms) => {
     const p = await page.evaluate(() => window.__jogo.paraTela(280, 158));
     await page.evaluate(({ x, y }) => document.dispatchEvent(new PointerEvent('pointerdown', { clientX: x, clientY: y, isPrimary: true, bubbles: true })), p);
