@@ -493,7 +493,7 @@ function moverGaivotas() {
     if (!g.bateu && p.estado === 'bloco' && p.linha === g.linha && Math.abs(g.x - p.x) < 10) {
       g.bateu = true;
       toques.gaivota++;
-      empurrar(g.dir * 14, 'gaivota');
+      empurrar(g.dir * M.empurraoGaivota, 'gaivota');
     }
   }
   gaivotas = gaivotas.filter((g) => g.aviso > 0 || (g.x > -30 && g.x < 350));
@@ -512,7 +512,7 @@ function moverCaranguejos() {
       c.espera = 90;
       toques.caranguejo++;
       if (!M.empurra) danca = 30;
-      empurrar(p.x < cx ? -12 : 12, 'caranguejo');
+      empurrar(p.x < cx ? -M.empurraoCaranguejo : M.empurraoCaranguejo, 'caranguejo');
     }
   }
 }

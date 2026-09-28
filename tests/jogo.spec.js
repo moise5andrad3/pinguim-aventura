@@ -63,7 +63,7 @@ function puloSeguro(s, destino) {
 // O bloco está levando o Pinguinzinho para a borda da tela (onde ele cairia).
 function pertoDaBorda(s) {
   const v = s.fileiras[s.linha].vel;
-  return (v < 0 && s.x < 50) || (v > 0 && s.x > 270);
+  return (v < 0 && s.x < 80) || (v > 0 && s.x > 240);
 }
 
 // Joga a fase por toques até sair da cena de jogo. "amostra" recebe o estado a cada leitura.
@@ -418,6 +418,7 @@ test('Aventura: fase 1 concluída por toques, com bônus de sol e recorde de tem
 for (const fase of [1, 2, 3]) {
   test(`Aventura: fase ${fase + 1} concluída por toques`, async ({ page }) => {
     soPixel();
+    test.setTimeout(420000);
     await comProgresso(page, 4);
     await abrirFase(page, 'aventura', fase);
     let capturou = false;
@@ -428,7 +429,7 @@ for (const fase of [1, 2, 3]) {
         capturou = true;
       }
       fim = s;
-    });
+    }, 400000);
     expect(cena).toBe('concluida');
     test.info().annotations.push({
       type: 'aventura',

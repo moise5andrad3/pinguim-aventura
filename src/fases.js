@@ -12,6 +12,8 @@ export const MODOS = {
     velocidade: 1.0,
     largura: 1.0,
     empurra: false,    // gaivota e caranguejo só balançam o Pinguinzinho
+    empurraoGaivota: 0,
+    empurraoCaranguejo: 0,
   },
   aventura: {
     assistencia: 4,
@@ -20,9 +22,11 @@ export const MODOS = {
     ajudaApos: 0,
     ajudaFator: 1,
     ajudaSeg: 0,
-    velocidade: 1.4,
-    largura: 0.8,
+    velocidade: 1.25,
+    largura: 0.9,
     empurra: true,     // gaivota e caranguejo empurram; pode cair
+    empurraoGaivota: 14,
+    empurraoCaranguejo: 8,
   },
 };
 
@@ -63,7 +67,7 @@ export const FASES = [
     fileiras: [
       { vel: -0.40, blocos: [[0, 60], [150, 60, 3], [300, 60]] },
       { vel: 0.35, blocos: [[40, 60], [189, 60, 1], [338, 60]] },
-      { vel: -0.45, blocos: [[20, 56, 5], [132, 56], [244, 56, 2], [356, 56]] },
+      { vel: -0.36, blocos: [[20, 60, 5], [132, 60], [244, 60, 2], [356, 60]] },
       { vel: 0.35, blocos: [[70, 64], [219, 64, 4], [368, 64]] },
     ],
     afundar: { ciclo: 7 },
@@ -79,7 +83,7 @@ export const FASES = [
     fileiras: [
       { vel: -0.45, blocos: [[0, 60], [150, 60, 2], [300, 60]] },
       { vel: 0.40, blocos: [[40, 60], [189, 60], [338, 60]] },
-      { vel: -0.50, blocos: [[20, 56], [132, 56, 5], [244, 56], [356, 56]] },
+      { vel: -0.40, blocos: [[20, 60], [132, 60, 5], [244, 60], [356, 60]] },
       { vel: 0.40, blocos: [[70, 64], [219, 64], [368, 64]] },
     ],
     afundar: { ciclo: 8 },
