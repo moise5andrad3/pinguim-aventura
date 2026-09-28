@@ -8,10 +8,14 @@ import { escreverCentro, escrever } from './fonte.js';
 import { cena as abertura } from './cenas/abertura.js';
 import { cena as jogo } from './cenas/jogo.js';
 import { cena as concluida } from './cenas/concluida.js';
+import { cena as modo } from './cenas/modo.js';
+import { cena as mapa } from './cenas/mapa.js';
+import { cena as final } from './cenas/final.js';
+import { cena as recordes } from './cenas/recordes.js';
 
 const PASSO = 1 / 60;
 const MAX_PASSOS = 5;
-const CENAS = { abertura, jogo, concluida };
+const CENAS = { abertura, modo, mapa, jogo, concluida, final, recordes };
 const DIAG = new URLSearchParams(location.search).has('diag');
 
 let nomeCena = '';
@@ -136,6 +140,9 @@ iniciarToque(
   () => {
     audio.desbloquear();
     tela.telaCheia();
+  },
+  () => {
+    if (cena.soltar) cena.soltar();
   },
 );
 trocarCena('abertura');

@@ -368,6 +368,7 @@ e o que não foi possível testar. A publicação acontece quando o mantenedor f
 | Cache velho do service worker após atualização | Criança joga versão antiga | Cache com versão no nome e troca na próxima abertura com rede. Registrar a versão na tela de recordes (número pequeno) |
 | As crianças preferem segurar em pé | Rejeição | Observar no playtest do M1, antes de investir em arte. Mudar a orientação exige novo ADR |
 | Escopo crescer (fase corrida, mais inimigos) | Atraso | Fora de escopo explícito (seção 3). Novidades só depois da v1.0 e com aprovação |
+| Bloco leva o Pinguinzinho até a borda da tela e ele cai (achado no M2 pelo robô de teste: foi a causa de todas as quedas dele no Aventura) | Frustração, sobretudo no Aventura, onde a queda custa peixe-vida | Observar no playtest. Opções, se incomodar: parar o bloco na borda ou empurrar o Pinguinzinho de volta para dentro |
 | Vazamento de dado pessoal no repositório | Privacidade | G6 roda em todo marco. Anotações ficam no Drive |
 
 ## Decisões do GATE 3 (mantenedor, 2026-09-27)
@@ -398,3 +399,21 @@ e o que não foi possível testar. A publicação acontece quando o mantenedor f
 - **Nome do protagonista:** trocado de "Pipo" para **"Pinguinzinho"** (pedido do mantenedor). É
   uma palavra comum do português e não identifica ninguém. Por enquanto o nome não aparece escrito
   no jogo; se aparecer, será só como texto dentro do jogo.
+
+## Calibração inicial feita no M2 (antes do playtest)
+
+Os testes automáticos jogam cada fase por script, pulando com inclinação como uma pessoa faria.
+Com os valores originais, o robô não conseguia concluir as fases 3 e 4 no modo Aventura. Todas as
+quedas vinham de duas causas: o bloco levava o Pinguinzinho até a borda da tela, ou o caranguejo
+o empurrava para fora de um bloco estreito. Ajustes feitos em `src/fases.js`:
+
+- **Modo Aventura:**
+  - velocidade dos blocos de 1,4 para 1,25 vez a do Diversão;
+  - largura de 80% para 90%;
+  - empurrão do caranguejo de 12 para 8 px (a gaivota continua com 14 px).
+- **Fases 3 e 4:** a fileira mais rápida ficou mais lenta (de 0,45 para 0,36 e de 0,50 para 0,40
+  px por passo), com blocos de 60 px.
+
+Mesmo assim, a fase 3 no Aventura ainda custa ao robô cerca de dois recomeços. É o primeiro ponto
+a observar no playtest do jogador de 10 anos.
+

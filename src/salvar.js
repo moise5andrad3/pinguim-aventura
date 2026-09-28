@@ -27,14 +27,26 @@ export function gravar() {
   } catch (e) { /* segue em memória */ }
 }
 
-// Registra a conclusão de uma fase: carimbo, fase seguinte liberada e recorde de pontos.
+// Registra a conclusão de uma fase: carimbo, fase seguinte liberada e recordes
+// (maior pontuação; menor tempo). Devolve true se algum recorde foi batido.
 export function concluirFase(modo, fase, pontos, segundos) {
   const m = dados.modos[modo];
   m.carimbos[fase] = true;
   m.liberada = Math.max(m.liberada, Math.min(fase + 2, 4));
   const r = m.recordes[fase];
-  const novo = !r || pontos > r.pontos;
-  if (novo) m.recordes[fase] = { pontos, segundos };
+  let novo = false;
+  if (!r) {
+    m.recordes[fase] = { pontos, segundos };
+    novo = true;
+  } else {
+    if (pontos > r.pontos) { r.pontos = pontos; novo = true; }
+    if (segundos < r.segundos) { r.segundos = segundos; novo = true; }
+  }
   gravar();
   return novo;
+}
+
+export function apagarTudo() {
+  dados.modos = padrao().modos;
+  gravar();
 }

@@ -1,31 +1,27 @@
-// Fase concluída: fanfarra, carimbo do Pinguinzinho (recompensa única dos dois modos), peixes e pontos.
+// Fase concluída: fanfarra, carimbo do Pinguinzinho (recompensa única dos dois modos),
+// peixes, estrelas e pontos. Troféu se algum recorde foi batido.
 import * as audio from '../audio.js';
 import { escrever, escreverCentro } from '../fonte.js';
 import { concluirFase } from '../salvar.js';
+import { carimbo } from './mapa.js';
 
 let t = 0;
 let info = null;
-
-function circulo(tela, cx, cy, r, cor) {
-  for (let y = -r; y <= r; y++) {
-    const w = Math.round(Math.sqrt(r * r - y * y));
-    tela.ret(cx - w, cy + y, w * 2 + 1, 1, cor);
-  }
-}
+let recorde = false;
 
 export const cena = {
   entrar(d) {
     info = d;
     t = 0;
-    concluirFase(d.modo, d.fase, d.pontos, d.segundos);
+    recorde = concluirFase(d.modo, d.fase, d.pontos, d.segundos);
     audio.tocar('fanfarra');
   },
 
   toque() {
     if (t < 90) return;
     audio.tocar('toque');
-    // M1: volta para a mesma fase. O mapa entra no M2.
-    cena.trocar('jogo', { modo: info.modo, fase: info.fase });
+    if (info.fase === 3) cena.trocar('final', { modo: info.modo });
+    else cena.trocar('mapa', { modo: info.modo });
   },
 
   atualizar() {
@@ -38,17 +34,18 @@ export const cena = {
     tela.ret(0, 0, 320, 180, 1);
     for (let i = 0; i < 24; i++) tela.ret((i * 53 + t) % 320, (i * 37) % 180, 1, 1, 5);
     escreverCentro('BOA!', 160, 14, 7, 4, 0);
-    // carimbo: aparece "batendo" a partir de 0,75 s
     if (t >= 45) {
       const k = Math.min(1, (t - 45) / 8);
-      const r = Math.round(34 - 10 * k);
-      circulo(tela, 90, 100, r, 9);
-      circulo(tela, 90, 100, r - 3, 5);
-      tela.sprite('pinguim', 82, 92);
+      carimbo(tela, 90, 100, Math.round(34 - 10 * k));
     }
-    tela.sprite('peixe', 170, 84);
-    escrever(String(info.peixes), 186, 84, 5, 2);
-    escrever(String(info.pontos), 170, 108, 7, 2);
+    tela.sprite('peixe', 170, 78);
+    escrever(String(info.peixes), 186, 78, 5, 2);
+    if (info.totalEstrelas) {
+      tela.sprite('estrela', 222, 80);
+      escrever(info.estrelas + '/' + info.totalEstrelas, 236, 78, 5, 2);
+    }
+    escrever(String(info.pontos), 170, 104, 7, 2);
+    if (recorde && t >= 60) tela.sprite('trofeu', 172, 128, false, 2);
     if (t >= 90 && t % 60 < 40) {
       for (let i = 0; i < 24; i++) {
         const w = i < 12 ? i : 24 - i;

@@ -64,6 +64,7 @@ export const cena = {
   atualizar(dt) {},        // passo fixo
   desenhar(tela) {},       // uma vez por quadro
   toque(x, y) {},          // pointerdown já convertido para coordenadas lógicas
+  soltar() {},             // opcional: pointerup (usado para "segurar" a lixeira dos recordes)
 };
 ```
 
@@ -115,6 +116,9 @@ export const cena = {
   ]
   ```
 
+- **Formas procedurais:** o ursinho-polar, o carimbo e as ilhas do mapa são desenhados com
+  círculos (`tela.circulo`), sem matriz de caracteres. Variações de cor, como o peixe dourado e o
+  peixe-vida, são derivadas do desenho do peixe comum.
 - **Por quê:** a arte fica versionada como texto, diffs legíveis, peso mínimo, sem ferramenta
   externa. Isso atende à decisão pendente do PRD, seção 8.
 - **Ícones da instalação (M3):** ícones PNG são gerados a partir dessas matrizes por um script de
