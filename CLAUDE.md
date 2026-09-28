@@ -21,8 +21,10 @@ Conceito aprovado (GATE 1): **B, base Frostbite**; protagonista **Pinguinzinho**
 
 ## Adequação à idade
 
-- Alvos de toque de no mínimo 2 cm (~115 px CSS nos aparelhos-alvo; ver `docs/referencias.md`,
-  P1), encostados na borda da tela, sem gestos finos, toque duplo ou multitoque obrigatórios.
+- Toque: no jogo, tocar no próprio destino (o bloco para onde o pinguim vai) sempre funciona; a
+  linha entre "subir" e "descer" é o pinguim. Botões de canto com ~1,3 cm (72 px CSS); menus e
+  cartões grandes. Referência de pesquisa: 2 cm (`docs/referencias.md`, P1), reduzida após o
+  playtest (ver `docs/PRD.md`). Sem gestos finos, toque duplo ou multitoque obrigatórios.
 - Jogável sem saber ler: ícones, cores, sons e demonstração em vez de texto.
 - Falha suave, sem sustos nem violência; no modo do jogador de 6 anos, sem game over punitivo.
 - Um nível de dificuldade ou desafios opcionais que mantenham o jogador de 10 anos interessado.

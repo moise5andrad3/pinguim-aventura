@@ -6,7 +6,7 @@ import { dados, apagarTudo } from '../salvar.js';
 import { noCanto } from '../tela.js';
 import { carimbo } from './mapa.js';
 
-export const VERSAO = 'V0.2';
+export const VERSAO = 'V0.3';
 const SEGURAR = 180; // 3 s
 
 let modo = 'diversao';
@@ -52,24 +52,30 @@ export const cena = {
   desenhar(tela) {
     tela.fundo(1);
     tela.ret(0, 0, 320, 180, 1);
-    tela.sprite('trofeu', 150, 6, false, 2);
-    // cabeçalho: pinguim pequeno (Diversão) e grande (Aventura)
-    tela.sprite('pinguim', 112, 36);
-    tela.sprite('pinguim', 212, 22, false, 2);
-    ['diversao', 'aventura'].forEach((m, coluna) => {
-      const r = dados.modos[m];
-      const x0 = coluna === 0 ? 70 : 170;
-      for (let f = 0; f < 4; f++) {
-        const y = 62 + f * 24;
-        escrever(String(f + 1), 40, y + 4, 4);
-        if (r.carimbos[f]) carimbo(tela, x0 + 10, y + 8, 10);
+    // título com troféu
+    tela.sprite('trofeu', 110, 6);
+    escrever('RECORDES', 128, 4, 7, 2);
+    // colunas: DIVERSÃO (pinguim pequeno) e AVENTURA (pinguim grande), com rótulos
+    tela.sprite('pinguim', 64, 24);
+    escrever('DIVERSÃO', 82, 30, 5);
+    tela.sprite('pinguim', 182, 24);
+    escrever('AVENTURA', 200, 30, 7);
+    escrever('PONTOS', 94, 42, 4);
+    escrever('PONTOS', 206, 42, 4);
+    escrever('TEMPO', 260, 42, 4);
+    for (let f = 0; f < 4; f++) {
+      const y = 54 + f * 22;
+      escrever('FASE ' + (f + 1), 8, y + 4, 4);
+      ['diversao', 'aventura'].forEach((m, coluna) => {
+        const r = dados.modos[m];
+        const x0 = coluna === 0 ? 70 : 182;
+        if (r.carimbos[f]) carimbo(tela, x0 + 6, y + 7, 9);
         const rec = r.recordes[f];
-        if (rec) {
-          escrever(String(rec.pontos), x0 + 26, y + 1, 5);
-          if (m === 'aventura') escrever(rec.segundos + 'S', x0 + 26, y + 10, 7);
-        }
-      }
-    });
+        if (!rec) return;
+        escrever(String(rec.pontos), x0 + 24, y + 4, 5);
+        if (m === 'aventura') escrever(rec.segundos + ' SEG', 260, y + 4, 5);
+      });
+    }
     tela.botao('casa', 'esq');
     // lixeira com anel de progresso
     tela.ret(262, 142, 36, 30, 6);

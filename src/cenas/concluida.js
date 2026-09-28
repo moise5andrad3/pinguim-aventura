@@ -1,5 +1,5 @@
 // Fase concluída: fanfarra, carimbo do Pinguinzinho (recompensa única dos dois modos),
-// peixes, estrelas e pontos. Troféu se algum recorde foi batido.
+// peixes, estrelas, pontos e tempo, cada um com ícone e palavra. Troféu se houve recorde.
 import * as audio from '../audio.js';
 import { escrever, escreverCentro } from '../fonte.js';
 import { concluirFase } from '../salvar.js';
@@ -8,6 +8,12 @@ import { carimbo } from './mapa.js';
 let t = 0;
 let info = null;
 let recorde = false;
+
+function linha(tela, icone, rotulo, valor, y, cor) {
+  if (icone) tela.sprite(icone, 146, y + 3);
+  escrever(rotulo, 162, y + 4, 4);
+  escrever(valor, 216, y, cor, 2);
+}
 
 export const cena = {
   entrar(d) {
@@ -38,18 +44,19 @@ export const cena = {
       const k = Math.min(1, (t - 45) / 8);
       carimbo(tela, 90, 100, Math.round(34 - 10 * k));
     }
-    tela.sprite('peixe', 170, 78);
-    escrever(String(info.peixes), 186, 78, 5, 2);
-    if (info.totalEstrelas) {
-      tela.sprite('estrela', 222, 80);
-      escrever(info.estrelas + '/' + info.totalEstrelas, 236, 78, 5, 2);
+    // Cada número com ícone e palavra (pedido do playtest: os números sozinhos confundiam).
+    linha(tela, 'peixe', 'PEIXES', String(info.peixes), 56, 5);
+    if (info.totalEstrelas) linha(tela, 'estrela', 'ESTRELAS', info.estrelas + '/' + info.totalEstrelas, 80, 5);
+    linha(tela, null, 'PONTOS', String(info.pontos), 104, 7);
+    if (info.modo === 'aventura') linha(tela, 'sol', 'TEMPO', info.segundos + ' SEG', 128, 5);
+    if (recorde && t >= 60) {
+      tela.sprite('trofeu', 146, 150);
+      escrever('RECORDE!', 162, 153, 7);
     }
-    escrever(String(info.pontos), 170, 104, 7, 2);
-    if (recorde && t >= 60) tela.sprite('trofeu', 172, 128, false, 2);
     if (t >= 90 && t % 60 < 40) {
       for (let i = 0; i < 24; i++) {
         const w = i < 12 ? i : 24 - i;
-        tela.ret(262, 140 + i, w * 1.5, 1, 5);
+        tela.ret(290, 150 + i, w * 1.2, 1, 5);
       }
     }
   },

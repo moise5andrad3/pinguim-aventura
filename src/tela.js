@@ -81,8 +81,9 @@ export function telaCheia() {
     .catch(() => {});
 }
 
-// Botões fixos de canto: ícone pequeno, área de toque de ~2 cm (115 px CSS) encostada no canto.
-const CANTO_CSS = 115;
+// Botões fixos de canto: ícone pequeno, área de toque de ~1,3 cm (72 px CSS) encostada no canto.
+// Era 2 cm; no playtest a área grande roubava toques de quem queria pular perto da margem.
+const CANTO_CSS = 72;
 
 export function noCanto(x, y) {
   if (x === null) return null;

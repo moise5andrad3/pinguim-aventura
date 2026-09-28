@@ -136,15 +136,16 @@ Tela em paisagem, 320 × 180 px lógicos. As medidas são aproximadas.
 
 - **Faixas da tela:** margem de y 0 a 36, 4 fileiras de 24 px de y 36 a 132, e mar de y 132 a
   180.
-- **Linha divisória:** fica na altura do Pinguinzinho, limitada ao intervalo de y 61 a 119. Assim cada
-  zona tem pelo menos 61 px lógicos, o que dá ≥ 2 cm tanto na escala 6 quanto na 5 (ADR-001).
-  - Na maior parte do tempo, "acima do Pinguinzinho" e "abaixo do Pinguinzinho" valem literalmente.
-  - Só perto da margem e da fileira 4 existe uma faixa estreita em que a zona segue a linha
-    limitada, não a posição do Pinguinzinho.
+- **Linha divisória:** é o próprio Pinguinzinho (o meio do desenho). Tocar no bloco para onde ele
+  deve ir sempre funciona. Na margem, a linha é a beira da água: tocar na neve anda, tocar nos
+  blocos pula. *(Mudou após o playtest do M2. Antes, a linha ficava limitada entre y 61 e 119 para
+  cada zona ter 2 cm. Com isso, tocar num bloco perto do Pinguinzinho às vezes contava como o lado
+  errado, e ele andava ou não fazia o que a criança queria.)*
 - **Cobertura:** as duas zonas cobrem a tela inteira, inclusive as sobras laterais fora da imagem
   de 320 × 180.
 - **Botões fixos:** `[II]` pausa e `[som]` silenciar, nos cantos superiores. O ícone é pequeno,
-  mas a área de toque é um quadrado de **2 cm** encostado no canto. Nessa área o toque aciona o
+  mas a área de toque é um quadrado de **~1,3 cm** (72 px CSS) encostado no canto. Era 2 cm; foi
+  reduzido após o playtest porque roubava toques de quem queria pular perto da margem. Nessa área o toque aciona o
   botão, não o pulo.
   - **Exceção (achada no M1):** com o Pinguinzinho numa fileira, um toque a menos de 24 px dele na
     horizontal é sempre pulo, mesmo dentro da área do canto. Sem isso, com o Pinguinzinho perto da borda,
@@ -321,13 +322,13 @@ Tudo é sintetizado com Web Audio: ondas quadrada, triangular e ruído. Não há
 | G2 | Peso total ≤ 500 KB | Script |
 | G3 | Zero requisições de rede após o evento `load`, incluindo 60 s de jogo | Playwright |
 | G4 | Após a primeira visita, recarregar offline abre o jogo e permite jogar a fase 1 | Playwright |
-| G5 | Toda área de toque tem ≥ 2 cm no A56 e no g55, pela densidade e pela escala medidas | Teste com a escala exposta pelo modo de diagnóstico e conferência no aparelho |
+| G5 | Botões de canto com ≥ 72 px CSS (~1,3 cm medidos); zonas de pulo sempre do tamanho do espaço entre o Pinguinzinho e a borda; menus e cartões com ≥ 2 cm | Teste com a escala exposta pelo modo de diagnóstico e conferência no aparelho |
 | G6 | Nenhum nome ou dado pessoal no repositório | `grep` com uma lista de termos mantida **fora** do repositório (variável de ambiente local) |
 | G7 | Nenhuma URL externa carregada pelo código do jogo | `grep` por `http` nos arquivos servidos, mais G3 |
 | G8 | Nenhum som antes do primeiro toque; o botão de silenciar funciona e persiste | Playwright, pelo estado do `AudioContext` e do `localStorage` |
 | G9 | Em retrato aparece o aviso "gire o celular"; em paisagem, o jogo | Playwright |
 | G10 | O jogo pausa sozinho ao ir para segundo plano | Playwright |
-| G11 | Todas as telas são navegáveis sem ler: toda ação tem ícone, e as palavras são só "AVENTURA PINGUIM", "DIVERSÃO", "AVENTURA", "VAI!", "BOA!" e "FIM" | Revisão por lista de verificação e capturas de tela |
+| G11 | Todas as telas são navegáveis sem ler: toda ação tem ícone, e as palavras são só "AVENTURA PINGUIM", "DIVERSÃO", "AVENTURA", "VAI!", "BOA!", "FIM" e os rótulos dos números ("PEIXES", "ESTRELAS", "PONTOS", "TEMPO", "RECORDE!", "RECORDES", "FASE"), sempre junto de um ícone | Revisão por lista de verificação e capturas de tela |
 | G12 | No modo Diversão não existe tela nem estado de derrota | Teste por script: cair 20 vezes não reinicia nem tira tijolo |
 
 ### Por fase
@@ -416,4 +417,18 @@ o empurrava para fora de um bloco estreito. Ajustes feitos em `src/fases.js`:
 
 Mesmo assim, a fase 3 no Aventura ainda custa ao robô cerca de dois recomeços. É o primeiro ponto
 a observar no playtest do jogador de 10 anos.
+
+## Ajustes após o playtest do M2 (mantenedor, 2026-09-28)
+
+O mantenedor relatou três pontos: a dificuldade está boa (é superada com o tempo), o jogo não trava
+e cair pela borda não incomoda. Dois problemas foram corrigidos:
+
+1. **Ícones de pontuação e recordes pouco claros.** Nas telas de fase concluída e de recordes,
+   cada número ganhou uma palavra ao lado do ícone: PEIXES, ESTRELAS, PONTOS, TEMPO, RECORDE!,
+   FASE e os nomes dos modos. Isso aproveita que o jogador de 6 anos lê palavras simples.
+2. **Toques que não faziam o Pinguinzinho pular.** As crianças tocam perto do bloco de destino.
+   Três ajustes:
+   - a linha que separa "subir" de "descer" passou a ser o próprio Pinguinzinho;
+   - os botões de canto encolheram de 2 cm para ~1,3 cm;
+   - o toque dado durante o pulo fica guardado e é executado no pouso.
 

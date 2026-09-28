@@ -11,13 +11,12 @@ const MUNDO_MIN = -64;
 const MUNDO_LARG = 448;
 const PE_MARGEM = 33;
 const PULO_PASSOS = 21;          // 0,35 s
-const GUARDA_PASSOS = 9;         // toque nos últimos 150 ms do pulo fica guardado
+const GUARDA_PASSOS = 21;        // toque durante o pulo inteiro fica guardado (playtest)
 const INCLINACAO_MAX = 24;
 const X_MIN = 8;
 const X_MAX = 312;
 const X_PORTA = 160;
-const LINHA_MIN = 61;            // limites da linha divisória: cada zona >= 61 px (~2 cm)
-const LINHA_MAX = 119;
+const FIM_MARGEM = 36;           // na margem: tocar acima disso anda; abaixo, pula
 const NADO_SUBMERSO = 30;        // 0,5 s
 const NADO_TOTAL = 78;           // 1,3 s até voltar à margem
 const ENTRADA_PASSOS = 48;
@@ -185,7 +184,8 @@ export const cena = {
 
   estadoTeste() {
     return {
-      fase, modo, estado: pinguim.estado, linha: pinguim.linha, x: pinguim.x, tijolos, meta, porta,
+      fase, modo, estado: pinguim.estado, linha: pinguim.linha, destino: pinguim.destino, x: pinguim.x,
+      tijolos, meta, porta,
       pausa, ajuda, quedasSeguidas, pontos, peixesPegos, estrelasPegas, vidas, reinicios,
       reiniciando, passos, sol: M.sol ? M.sol - passos / 60 : null,
       assistencia: M.assistencia, toques: { ...toques }, quedasPor: { ...quedasPor },
@@ -259,7 +259,9 @@ function tocarNoJogo(x, y) {
     if (PULO_PASSOS - p.t <= GUARDA_PASSOS) p.guardado = { x, y };
     return;
   }
-  const divisoria = limitar(pe(p.linha) - 8, LINHA_MIN, LINHA_MAX);
+  // A linha que separa "subir" de "descer" é o próprio Pinguinzinho (o meio do desenho): tocar
+  // no bloco para onde ele deve ir sempre funciona. Na margem, a linha é a beira da água.
+  const divisoria = p.estado === 'margem' ? FIM_MARGEM : pe(p.linha) - 8;
   const acima = y < divisoria;
   const inclinacao = x === null ? 0 : limitar(x - p.x, -INCLINACAO_MAX, INCLINACAO_MAX);
   if (p.estado === 'margem') {
