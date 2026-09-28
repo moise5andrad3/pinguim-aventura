@@ -368,6 +368,7 @@ e o que não foi possível testar. A publicação acontece quando o mantenedor f
 | Cache velho do service worker após atualização | Criança joga versão antiga | Cache com versão no nome e troca na próxima abertura com rede. Registrar a versão na tela de recordes (número pequeno) |
 | As crianças preferem segurar em pé | Rejeição | Observar no playtest do M1, antes de investir em arte. Mudar a orientação exige novo ADR |
 | Escopo crescer (fase corrida, mais inimigos) | Atraso | Fora de escopo explícito (seção 3). Novidades só depois da v1.0 e com aprovação |
+| Bloco leva o Pinguinzinho até a borda da tela e ele cai (achado no M2 pelo robô de teste: foi a causa de todas as quedas dele no Aventura) | Frustração, sobretudo no Aventura, onde a queda custa peixe-vida | Observar no playtest. Opções, se incomodar: parar o bloco na borda ou empurrar o Pinguinzinho de volta para dentro |
 | Vazamento de dado pessoal no repositório | Privacidade | G6 roda em todo marco. Anotações ficam no Drive |
 
 ## Decisões do GATE 3 (mantenedor, 2026-09-27)

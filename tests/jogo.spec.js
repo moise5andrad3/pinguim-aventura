@@ -38,18 +38,32 @@ async function abrirFase(page, modo, fase) {
   await page.waitForFunction(() => window.__jogo.cena() === 'jogo');
 }
 
-// Pulo seguro: sem inclinação, o pouso cai dentro de um bloco (4 px de folga para dentro, sem
-// contar com a assistência) que não vai afundar logo.
+// Pulo seguro: procura uma inclinação (-24 a 24 px, como um jogador faria ao tocar mais para o
+// lado) em que o pouso caia dentro de um bloco (6 px de folga para dentro, sem contar com a
+// assistência) que não vá afundar logo. Devolve a inclinação ou null.
 function puloSeguro(s, destino) {
-  if (destino < 0) return true;
-  if (destino > 3) return false;
+  if (destino < 0) return 0;
+  if (destino > 3) return null;
   const vOrigem = s.linha >= 0 ? s.fileiras[s.linha].vel : 0;
-  const xPouso = s.x + vOrigem * 21;
+  const xReto = s.x + vOrigem * 21;
   const f = s.fileiras[destino];
-  return f.blocos.some(([bx, bw, etapa, ate]) => {
-    const x = bx + f.vel * 21;
-    return etapa !== 'afundado' && ate > 1.2 && xPouso >= x + 4 && xPouso <= x + bw - 4;
-  });
+  let melhor = null;
+  for (const [bx, bw, etapa, ate] of f.blocos) {
+    if (etapa === 'afundado' || ate <= 1.2) continue;
+    const a = bx + f.vel * 21 + 6;
+    const b = bx + f.vel * 21 + bw - 6;
+    if (a > b) continue;
+    const alvo = Math.min(Math.max(xReto, a), b);
+    const inc = alvo - xReto;
+    if (Math.abs(inc) <= 20 && alvo >= 10 && alvo <= 310 && (melhor === null || Math.abs(inc) < Math.abs(melhor))) melhor = inc;
+  }
+  return melhor;
+}
+
+// O bloco está levando o Pinguinzinho para a borda da tela (onde ele cairia).
+function pertoDaBorda(s) {
+  const v = s.fileiras[s.linha].vel;
+  return (v < 0 && s.x < 50) || (v > 0 && s.x > 270);
 }
 
 // Joga a fase por toques até sair da cena de jogo. "amostra" recebe o estado a cada leitura.
@@ -65,16 +79,24 @@ async function jogar(page, amostra = null, limite = 240000) {
       if (s.linha === -1) descendo = true;
       if (s.porta) descendo = false;
       let destino = null;
+      let inc = null;
       if (s.estado === 'margem') {
-        if (!s.porta && puloSeguro(s, 0)) destino = 0;
+        if (!s.porta) {
+          inc = puloSeguro(s, 0);
+          if (inc !== null) destino = 0;
+        }
       } else {
         const preferido = descendo ? s.linha + 1 : s.linha - 1;
         const outro = descendo ? s.linha - 1 : s.linha + 1;
-        if (puloSeguro(s, preferido)) destino = preferido;
-        else if (s.ateAfundarAtual < 1.5 && puloSeguro(s, outro)) destino = outro;
+        inc = puloSeguro(s, preferido);
+        if (inc !== null) destino = preferido;
+        else if (s.ateAfundarAtual < 1.5 || pertoDaBorda(s)) {
+          inc = puloSeguro(s, outro);
+          if (inc !== null) destino = outro;
+        }
       }
       if (destino !== null) {
-        await tocar(page, s.x, destino < s.linha ? 59.5 : 175);
+        await tocar(page, s.x + inc, destino < s.linha ? 59.5 : 175);
         await page.waitForTimeout(400);
         continue;
       }
@@ -392,6 +414,28 @@ test('Aventura: fase 1 concluída por toques, com bônus de sol e recorde de tem
   expect(salvo.modos.aventura.recordes[0].segundos).toBeGreaterThan(0);
   expect(salvo.modos.aventura.recordes[0].pontos).toBeGreaterThan(160);
 });
+
+for (const fase of [1, 2, 3]) {
+  test(`Aventura: fase ${fase + 1} concluída por toques`, async ({ page }) => {
+    soPixel();
+    await comProgresso(page, 4);
+    await abrirFase(page, 'aventura', fase);
+    let capturou = false;
+    let fim = null;
+    const cena = await jogar(page, async (s) => {
+      if (!capturou && s.tijolos >= 3 && s.estado === 'bloco') {
+        await captura(page, `fase${fase + 1}-aventura`);
+        capturou = true;
+      }
+      fim = s;
+    });
+    expect(cena).toBe('concluida');
+    test.info().annotations.push({
+      type: 'aventura',
+      description: `recomeços ${fim.reinicios}; toques ${JSON.stringify(fim.toques)}; quedas por ${JSON.stringify(fim.quedasPor)}`,
+    });
+  });
+}
 
 test('recordes: apagar só depois de segurar a lixeira por 3 s', async ({ page }) => {
   await comProgresso(page, 3);
