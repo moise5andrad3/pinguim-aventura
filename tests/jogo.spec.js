@@ -371,6 +371,8 @@ test('pausa sozinho quando o app vai para segundo plano', async ({ page }) => {
     document.dispatchEvent(new Event('visibilitychange'));
   });
   expect(await page.evaluate(() => window.__jogo.loopParado())).toBe(false);
+  // espera > 120 ms: dois toques no mesmo ponto em menos tempo contam como um só (holdover)
+  await page.waitForTimeout(200);
   await tocar(page, 160, 100);
   expect((await estado(page)).pausa).toBeNull();
 });

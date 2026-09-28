@@ -320,7 +320,7 @@ Tudo é sintetizado com Web Audio: ondas quadrada, triangular e ruído. Não há
 |---|---|---|
 | G1 | O jogo carrega sem erro nem aviso no console em emulação de Pixel 7 e Galaxy S (toque ligado) | Playwright |
 | G2 | Peso total ≤ 500 KB | Script |
-| G3 | Zero requisições de rede após o evento `load`, incluindo 60 s de jogo | Playwright |
+| G3 | Nenhuma requisição a outra origem em momento algum. Depois da 1ª visita, o jogo roda sem rede. Na 1ª visita, o que acontece após o `load` é só a instalação do service worker e o manifest, na mesma origem | Playwright (teste de offline e filtro de origem) |
 | G4 | Após a primeira visita, recarregar offline abre o jogo e permite jogar a fase 1 | Playwright |
 | G5 | Botões de canto com ≥ 72 px CSS (~1,3 cm medidos); zonas de pulo sempre do tamanho do espaço entre o Pinguinzinho e a borda; menus e cartões com ≥ 2 cm | Teste com a escala exposta pelo modo de diagnóstico e conferência no aparelho |
 | G6 | Nenhum nome ou dado pessoal no repositório | `grep` com uma lista de termos mantida **fora** do repositório (variável de ambiente local) |
