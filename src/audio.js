@@ -24,6 +24,15 @@ const SONS = {
     vol: 0.07,
   },
   carimbo: { onda: 'triangle', notas: [[196, 0.05], [131, 0.12]], vol: 0.2 },
+  grasnado: { onda: 'square', notas: [[1200, 0.05], [900, 0.05], [1200, 0.05], [900, 0.08]], vol: 0.05 },
+  empurrao: { onda: 'triangle', notas: [[330, 0.05], [220, 0.08]], vol: 0.14 },
+  clique: { onda: 'square', notas: [[1600, 0.02], [0, 0.04], [1600, 0.02]], vol: 0.04 },
+  urso: { onda: 'triangle', notas: [[110, 0.12], [98, 0.2], [82, 0.25]], vol: 0.22 },
+  estrela: { onda: 'triangle', notas: [[1319, 0.05], [1568, 0.05], [2093, 0.05], [2637, 0.12]], vol: 0.12 },
+  dourado: { onda: 'square', notas: [[784, 0.05], [988, 0.05], [1175, 0.05], [1568, 0.05], [1976, 0.12]], vol: 0.06 },
+  aviso: { onda: 'triangle', notas: [[660, 0.05], [0, 0.05], [660, 0.05]], vol: 0.08 },
+  perda: { onda: 'triangle', notas: [[523, 0.12], [440, 0.12], [392, 0.25]], vol: 0.14 },
+  cadeado: { onda: 'square', notas: [[196, 0.05], [196, 0.05]], vol: 0.05 },
 };
 
 export function desbloquear() {
@@ -77,9 +86,9 @@ export function tocar(nome) {
   osc.connect(g);
   g.gain.setValueAtTime(0, t);
   for (const [f, d] of s.notas) {
-    osc.frequency.setValueAtTime(f, t);
-    g.gain.setValueAtTime(s.vol, t);
-    g.gain.setValueAtTime(s.vol, t + d * 0.7);
+    osc.frequency.setValueAtTime(f || 1, t);
+    g.gain.setValueAtTime(f ? s.vol : 0, t);
+    g.gain.setValueAtTime(f ? s.vol : 0, t + d * 0.7);
     g.gain.linearRampToValueAtTime(0.0001, t + d);
     t += d;
   }

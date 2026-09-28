@@ -21,8 +21,7 @@ export const cena = {
       return;
     }
     audio.tocar('pulo');
-    // M1: só a fase 1 no modo Diversão. Escolha de modo e mapa entram no M2.
-    cena.trocar('jogo', { modo: 'diversao', fase: 0 });
+    cena.trocar('modo');
   },
 
   atualizar() {

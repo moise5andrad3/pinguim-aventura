@@ -11,6 +11,7 @@ const trabalho = document.createElement('canvas');
 trabalho.width = L;
 trabalho.height = A;
 export const ctx = trabalho.getContext('2d');
+ctx.imageSmoothingEnabled = false;
 
 export let escala = 1;
 
@@ -59,9 +60,17 @@ export function ret(x, y, w, h, cor) {
   ctx.fillRect(Math.round(x), Math.round(y), Math.round(w), Math.round(h));
 }
 
-export function sprite(nome, x, y, espelhar = false) {
+export function sprite(nome, x, y, espelhar = false, fator = 1) {
   const s = IMG[nome];
-  ctx.drawImage(espelhar ? s.espelho : s.normal, Math.round(x), Math.round(y));
+  const img = espelhar ? s.espelho : s.normal;
+  ctx.drawImage(img, Math.round(x), Math.round(y), img.width * fator, img.height * fator);
+}
+
+export function circulo(cx, cy, r, cor) {
+  for (let y = -r; y <= r; y++) {
+    const w = Math.round(Math.sqrt(r * r - y * y));
+    ret(cx - w, cy + y, w * 2 + 1, 1, cor);
+  }
 }
 
 export function telaCheia() {

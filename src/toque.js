@@ -11,7 +11,8 @@ let ultimo = { t: -1e9, x: 0, y: 0 };
 // aoGesto(): chamada nos eventos que o navegador aceita como gesto do usuário. No toque, isso é
 // o pointerup (dedo saindo da tela), não o pointerdown (HTML Standard, "activation triggering
 // input event"). Tela cheia e desbloqueio de áudio só funcionam a partir desses eventos.
-export function iniciarToque(aoToque, aoGesto) {
+// aoSoltar(): chamada ao soltar o dedo (para ações de "segurar", como apagar recordes).
+export function iniciarToque(aoToque, aoGesto, aoSoltar) {
   document.addEventListener('pointerdown', (e) => {
     e.preventDefault();
     if (!e.isPrimary) return;
@@ -24,7 +25,9 @@ export function iniciarToque(aoToque, aoGesto) {
   }, { passive: false });
 
   document.addEventListener('pointerup', (e) => {
-    if (e.isPrimary) aoGesto();
+    if (!e.isPrimary) return;
+    aoGesto();
+    aoSoltar();
   });
 
   // Evita menu de toque longo e gestos residuais.
